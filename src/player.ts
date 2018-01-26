@@ -128,6 +128,30 @@ export class Player {
 			this.health = 0;
 		}
 		console.log('takeDamage', damage);
+
+		let text = this.game.add.text(this.body.x, this.body.y, "" + damage, {
+			fontSize: 40 + damage,
+			font: 'impact',
+			fill: '#ff0000'
+		});
+		text.anchor.set(0.5);
+
+		//Fade in
+		text.alpha = 0;
+		text.scale.set(.4);
+		this.game.add.tween(text.scale)
+			//.from({x: .4, y: .4}, 0)
+			.to({x : 1, y: 1}, 100, undefined, true);
+
+		this.game.add.tween(text)
+			//.from({alpha: 0})
+			.to({alpha: 1}, 100, undefined, true)
+			.chain(this.game.add.tween(text)
+				.to({alpha: 0}, 600));
+
+		if (damage > 20) {
+			this.game.camera.shake(damage * 0.001, 200);
+		}
 	}
 
 	bodyMass: number;

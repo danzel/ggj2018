@@ -19,6 +19,7 @@ export default class GameState extends Phaser.State {
 	losingPlayer: number = null;
 
 	preload() {
+		this.game.camera.shake(0, 0);
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'Loaded, lets go ', { font: '42px Bangers', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);
 
@@ -69,8 +70,9 @@ export default class GameState extends Phaser.State {
 				}
 
 
-				if (p) {
-					p.takeDamage(force * ImpactDamageMultiplier);
+				force = Math.round(Math.abs(force * ImpactDamageMultiplier));
+				if (p && force > 0) {
+					p.takeDamage(force);
 
 					//check players for death or something
 					if (p.health <= 0) {
