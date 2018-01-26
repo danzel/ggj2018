@@ -8,6 +8,8 @@ let globalScore = [
 	0, 0, 0, 0
 ];
 
+const ImpactDamageMultiplier = 0.7;
+
 export default class GameState extends Phaser.State {
 	players: Player[];
 	init() {
@@ -50,22 +52,39 @@ export default class GameState extends Phaser.State {
 
 		this.input.gamepad.start();
 
+		this.physics.p2.onBeginContact.removeAll();
 		this.physics.p2.onBeginContact.add((a, b, c, d, e) => {
 			if (this.losingPlayer === null) {
-				if (a.isPlayer && b.isMace) {
-					this.losingPlayer = this.players.indexOf(a.player)
+
+				let force: number = 0;
+				let p: Player = null;
+
+				if (a.isPlayer && b.isMace && e[0].firstImpact) {
+					force = e[0].getVelocityAlongNormal();
+					p = a.player;
 				}
-				if (b.isPlayer && a.isMace) {
-					this.losingPlayer = this.players.indexOf(b.player)
+				if (b.isPlayer && a.isMace && e[0].firstImpact) {
+					force = e[0].getVelocityAlongNormal();
+					p = b.player;
 				}
 
-				if (this.losingPlayer !== null) {
-					this.add.text(1920 / 2, 80, "Player " + this.losingPlayer + " LOSES", {
-						fontSize: 20,
-						fill: '#ff0000'
-					});
-					globalScore[this.losingPlayer]++;
-					setTimeout(() => { this.game.state.start('game')}, 1000);
+
+				if (p) {
+					p.takeDamage(force * ImpactDamageMultiplier);
+
+					//check players for death or something
+					if (p.health <= 0) {
+						let index = this.players.indexOf(p);
+						this.losingPlayer = index;
+
+						this.add.text(1920 / 2, 80, "Player " + (this.losingPlayer + 1) + " LOSES", {
+							fontSize: 20,
+							fill: '#ff0000'
+						});
+						console.log('----------- gg ----------');
+						globalScore[this.losingPlayer]++;
+						setTimeout(() => { this.game.state.start('game') }, 1000);
+					}
 				}
 			}
 		});

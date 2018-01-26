@@ -2,7 +2,9 @@ import * as Phaser from 'phaser-ce';
 import { DebugRender } from './globals';
 
 export const MaxTurboTimeSeconds = 3;
-export const TurboRechargeSecondsPerSecond = .3;
+export const TurboRechargeSecondsPerSecond = .7;
+
+export const MaxHealth = 100;
 
 export class Player {
 	body: Phaser.Physics.P2.Body;
@@ -13,12 +15,16 @@ export class Player {
 	turboAmount = MaxTurboTimeSeconds;
 	turboBar: Phaser.Graphics;
 
+	health = MaxHealth;
+	healthBar: Phaser.Graphics;
+
 	constructor(private game: Phaser.Game, private pad: Phaser.SinglePad, x: number, y: number) {
 
 		this.createBody(x, y);
 		this.createChain();
 
-		this.createTurboBar();
+		this.turboBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
+		this.healthBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
 
 		(<any>this.body.data).player = this;
 		(<any>this.body.data).isPlayer = true;
@@ -90,21 +96,38 @@ export class Player {
 		this.maceMass = this.maceBody.mass;
 	}
 
-	private createTurboBar() {
-		this.turboBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
-	}
-
 	private updateTurboBar() {
 		this.turboBar.x = this.sprite.x - 40;
 		this.turboBar.y = this.sprite.y - 40;
 		
 		this.turboBar.clear();
 		this.turboBar.beginFill(0xffffff);
-		this.turboBar.drawRect(-1, -1, 82, 22);
+		this.turboBar.drawRect(-1, -1, 82, 12);
 		this.turboBar.endFill();
 		this.turboBar.beginFill(0xff0000);
-		this.turboBar.drawRect(0, 0, 80 * this.turboAmount / MaxTurboTimeSeconds, 20);
+		this.turboBar.drawRect(0, 0, 80 * this.turboAmount / MaxTurboTimeSeconds, 10);
 		this.turboBar.endFill();
+	}
+
+	private updateHealthBar() {
+		this.healthBar.x = this.sprite.x - 40;
+		this.healthBar.y = this.sprite.y - 28;
+		
+		this.healthBar.clear();
+		this.healthBar.beginFill(0xffffff);
+		this.healthBar.drawRect(-1, -1, 82, 12);
+		this.healthBar.endFill();
+		this.healthBar.beginFill(0x00ff00);
+		this.healthBar.drawRect(0, 0, 80 * this.health / MaxHealth, 10);
+		this.healthBar.endFill();
+	}
+
+	takeDamage(damage: number) {
+		this.health -= damage;
+		if (this.health < 0) {
+			this.health = 0;
+		}
+		console.log('takeDamage', damage);
 	}
 
 	bodyMass: number;
@@ -149,5 +172,6 @@ export class Player {
 		this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
 
 		this.updateTurboBar();
+		this.updateHealthBar();
 	}
 }

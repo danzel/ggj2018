@@ -1,10 +1,10 @@
 
 
 
-Damage base on swing strength
 Knockouts
 
 Directly connected weapon (axe - no chain)
+Aimable weapon - spear
 
 Change chain length based on win / lose?
 
@@ -25,3 +25,4 @@ Done
 Ball in level
 Turbo button - increase weight and force.
 (A) turbo limited use, nos bar.
+Damage base on swing strength
