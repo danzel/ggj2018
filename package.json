@@ -1,0 +1,25 @@
+{
+  "name": "ggj2018",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "phaser-ce": "^2.10.0"
+  },
+  "devDependencies": {
+    "@types/webfontloader": "^1.6.29",
+    "css-loader": "^0.28.9",
+    "expose-loader": "^0.7.4",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.6",
+    "html-webpack-plugin": "^2.30.1",
+    "ts-loader": "^3.3.1",
+    "typescript": "^2.6.2",
+    "webfontloader": "^1.6.28",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack"
+  }
+}

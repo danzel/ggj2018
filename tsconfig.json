@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "outDir": "dist",
+        "sourceMap": true,
+
+        "lib": [
+            "dom", 
+            "es6"
+        ],
+
+        "forceConsistentCasingInFileNames": true
+    },
+    "files": [
+        "node_modules/phaser-ce/typescript/phaser.comments.d.ts",
+        "src/index.ts"
+    ]
+}
