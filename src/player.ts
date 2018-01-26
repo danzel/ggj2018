@@ -29,7 +29,7 @@ export class Player {
 		(<any>this.body.data).player = this;
 		(<any>this.body.data).isPlayer = true;
 		(<any>this.maceBody.data).player = this;
-		(<any>this.maceBody.data).isMace = true;
+		(<any>this.maceBody.data).isWeapon = true;
 	}
 
 	private createBody(x: number, y: number) {
@@ -56,6 +56,8 @@ export class Player {
 
 		const chainForce = Number.MAX_VALUE;
 
+		//ChainNoCollide let chainGroup = this.game.physics.p2.createCollisionGroup();
+
 		let lastBody = this.body;
 		let lastBodySize = 30;
 		for (let i = 0; i < chainLength; i++) {
@@ -63,8 +65,11 @@ export class Player {
 			this.game.physics.p2.enable(chainLink, DebugRender);
 			let chainBody = <Phaser.Physics.P2.Body>chainLink.body;
 			chainBody.clearShapes();
-			chainBody.addCircle(chainRadius);
+			chainBody.addCircle(chainRadius * 2);
+			//chainBody.addCircle(chainRadius);
+			//chainBody.addRectangle(chainRadius, chainRadius * 2)
 			chainBody.mass *= 0.1;
+			//ChainNoCollide chainBody.setCollisionGroup(chainGroup);
 			//chainBody.damping = 0.6;
 
 			//Link to last
@@ -159,7 +164,7 @@ export class Player {
 
 	//force = Math.random() * 20;
 	update() {
-		if (!this.pad.connected) {
+		if (!this.pad.connected || this.pad.getButton(Phaser.Gamepad.BUTTON_0) == null) {
 			return;
 		}
 		let scale = 5;

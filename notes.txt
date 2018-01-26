@@ -1,12 +1,14 @@
 
 
-
-Knockouts
+Throwing chain
 
 Directly connected weapon (axe - no chain)
-Aimable weapon - spear
+Aimable weapon - spear / bow and arrow
 
 Change chain length based on win / lose?
+
+
+Knockouts
 
 
 
@@ -26,3 +28,4 @@ Ball in level
 Turbo button - increase weight and force.
 (A) turbo limited use, nos bar.
 Damage base on swing strength
+Make chain not get caught in other persons chain

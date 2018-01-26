@@ -32,8 +32,8 @@ export default class GameState extends Phaser.State {
 		this.players = [
 			new Player(this.game, this.game.input.gamepad.pad1, 100, 100),
 			new Player(this.game, this.game.input.gamepad.pad2, G.RenderWidth - 40, 40),
-			//new Player(this.game, this.game.input.gamepad.pad3, 1280 -40, 720 - 40),
-			//new Player(this.game, this.game.input.gamepad.pad4, 40, 720 - 40),
+			new Player(this.game, this.game.input.gamepad.pad3, G.RenderWidth -100, 720 - 40),
+			new Player(this.game, this.game.input.gamepad.pad4, 40, 720 - 40),
 		];
 
 		let sprite = this.game.add.sprite(G.RenderWidth / 2, G.RenderHeight / 2);
@@ -44,7 +44,7 @@ export default class GameState extends Phaser.State {
 		body.damping = 0.6;
 
 		if (globalScore.some(s => s != 0)) {
-			this.add.text(1920 / 2, 40, globalScore[0] + ", " + globalScore[1], {
+			this.add.text(1920 / 2, 40, globalScore[0] + ", " + globalScore[1] + ", " + globalScore[2] + ", " + globalScore[3], {
 				fontSize: 20,
 				fill: '#ff0000'
 			});
@@ -60,11 +60,11 @@ export default class GameState extends Phaser.State {
 				let force: number = 0;
 				let p: Player = null;
 
-				if (a.isPlayer && b.isMace && e[0].firstImpact) {
+				if (a.isPlayer && b.isWeapon && e[0].firstImpact) {
 					force = e[0].getVelocityAlongNormal();
 					p = a.player;
 				}
-				if (b.isPlayer && a.isMace && e[0].firstImpact) {
+				if (b.isPlayer && a.isWeapon && e[0].firstImpact) {
 					force = e[0].getVelocityAlongNormal();
 					p = b.player;
 				}

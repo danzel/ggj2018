@@ -46,10 +46,10 @@ var GameState = /** @class */ (function (_super) {
         this.input.gamepad.start();
         this.physics.p2.onBeginContact.add(function (a, b, c, d, e) {
             if (_this.losingPlayer === null) {
-                if (a.isPlayer && b.isMace) {
+                if (a.isPlayer && b.isWeapon) {
                     _this.losingPlayer = _this.players.indexOf(a.player);
                 }
-                if (b.isPlayer && a.isMace) {
+                if (b.isPlayer && a.isWeapon) {
                     _this.losingPlayer = _this.players.indexOf(b.player);
                 }
                 if (_this.losingPlayer !== null) {
