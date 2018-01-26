@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser-ce';
 import * as WebFont from 'webfontloader';
 import { Player } from './player';
-import { DebugRender } from './globals';
+import * as G from './globals';
 
 
 let globalScore = [
@@ -27,11 +27,18 @@ export default class GameState extends Phaser.State {
 		this.physics.p2.applyGravity = true;
 
 		this.players = [
-			new Player(this.game, this.game.input.gamepad.pad1, 40, 40),
-			new Player(this.game, this.game.input.gamepad.pad2, 1280 - 40, 40),
+			new Player(this.game, this.game.input.gamepad.pad1, 100, 100),
+			new Player(this.game, this.game.input.gamepad.pad2, G.RenderWidth - 40, 40),
 			//new Player(this.game, this.game.input.gamepad.pad3, 1280 -40, 720 - 40),
 			//new Player(this.game, this.game.input.gamepad.pad4, 40, 720 - 40),
 		];
+
+		let sprite = this.game.add.sprite(G.RenderWidth / 2, G.RenderHeight / 2);
+		this.physics.p2.enable(sprite, G.DebugRender);
+		let body = <Phaser.Physics.P2.Body>sprite.body;
+		body.clearShapes();
+		body.addCircle(30);
+		body.damping = 0.6;
 
 		if (globalScore.some(s => s != 0)) {
 			this.add.text(1920 / 2, 40, globalScore[0] + ", " + globalScore[1], {

@@ -1,5 +1,27 @@
 
 
-Change chain length based on win / lose?
-(A) turbo limited use, nos bar.
 
+Damage base on swing strength
+Knockouts
+
+Directly connected weapon (axe - no chain)
+
+Change chain length based on win / lose?
+
+
+
+Nah 
+======================
+player heavier so they can move while swinging
+
+
+Impossible
+======================
+Fix max chain length
+
+
+Done
+=======================
+Ball in level
+Turbo button - increase weight and force.
+(A) turbo limited use, nos bar.

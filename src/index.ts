@@ -5,6 +5,7 @@ import './css/reset.css';
 
 import GameState from './gameState';
 import LoadingState from './loadingState';
+import * as G from './globals';
 
 new GameState();
 new LoadingState();
@@ -16,7 +17,7 @@ class SimpleGame {
 	cursors: Phaser.CursorKeys;
 
 	constructor() {
-		this.game = new Phaser.Game(1920, 1080, Phaser.AUTO, "content");
+		this.game = new Phaser.Game(G.RenderWidth, G.RenderHeight, Phaser.AUTO, "content");
 		
 		this.game.state.add('loading', LoadingState);
 		this.game.state.add('game', GameState);
