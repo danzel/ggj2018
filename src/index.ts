@@ -18,7 +18,7 @@ class SimpleGame {
 
 	constructor() {
 		this.game = new Phaser.Game(G.RenderWidth, G.RenderHeight, Phaser.AUTO, "content");
-		
+
 		this.game.state.add('loading', LoadingState);
 		this.game.state.add('game', GameState);
 		this.game.state.start('loading');
