@@ -9,8 +9,6 @@ export default class LoadingState extends Phaser.State {
 		this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.stage.disableVisibilityChange = true;
-
-		//TODO?
 	}
 
 	preload() {

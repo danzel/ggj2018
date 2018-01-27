@@ -91,7 +91,6 @@ export class Player {
 		this.body.angularDamping = 1;
 		this.body.damping = .999;
 		this.body.collideWorldBounds = true;
-		//(<any>this.body).gravityScale = 0;
 
 		this.bodyMass = this.body.mass;
 
@@ -106,10 +105,6 @@ export class Player {
 
 		const chainRadius = 10;
 		const chainLength = 10;//5-10
-
-		const chainForce = Number.MAX_VALUE;
-
-		//ChainNoCollide let chainGroup = this.game.physics.p2.createCollisionGroup();
 
 		let lastBody = this.body;
 		let lastBodySize = bodyRadius;
@@ -129,28 +124,15 @@ export class Player {
 			let chainBody = <Phaser.Physics.P2.Body>chainLink.body;
 			chainBody.clearShapes();
 			chainBody.addCircle(chainRadius * 2);
-			//chainBody.addCircle(chainRadius);
-			//chainBody.addRectangle(chainRadius, chainRadius * 2)
 			chainBody.mass *= 0.1;
-			//ChainNoCollide chainBody.setCollisionGroup(chainGroup);
-			//chainBody.damping = 0.6;
 
 			//Link to last
-			let ctr = this.game.physics.p2.createDistanceConstraint(lastBody, chainBody, lastBodySize + chainRadius, undefined, undefined, chainForce);
+			let ctr = this.game.physics.p2.createDistanceConstraint(lastBody, chainBody, lastBodySize + chainRadius);
 			this.constraints.push(ctr);
-			//if (lastBody != this.body) {
-			//	game.physics.p2.createRevoluteConstraint(lastBody, [0, lastBodySize], chainBody, [0, -chainRadius]);
-			//}
-			//game.physics.p2.createSpring(lastBody, chainBody, lastBodySize + chainRadius, 100);
-
-			//game.physics.p2.createconstraint
 
 			lastBody = chainBody;
 			lastBodySize = chainRadius;
 		}
-		//game.physics.p2.constraint
-
-		//game.physics.p2.createSpring(this.body, lastBody, dist, 4);
 
 		this.mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace');
 		this.mace.scale.set(0.4);
@@ -167,7 +149,7 @@ export class Player {
 		this.maceBody.addCircle(maceRadius);
 		this.maceBody.mass *= 0.5;
 		this.maceBody.fixedRotation = true;
-		let ctr = this.game.physics.p2.createDistanceConstraint(lastBody, this.maceBody, lastBodySize + maceRadius, undefined, undefined, chainForce);
+		let ctr = this.game.physics.p2.createDistanceConstraint(lastBody, this.maceBody, lastBodySize + maceRadius);
 		this.constraints.push(ctr);
 
 
@@ -187,7 +169,6 @@ export class Player {
 
 		body.clearShapes();
 		let rect = body.addRectangle(swordWidth, swordLength);
-		//rect.sensor = true;
 		body.mass *= 0.5;
 
 		let ctr = this.game.physics.p2.createRevoluteConstraint(this.body, [0, 0], body, [0, bodyRadius + swordLength * 0.6]);
@@ -223,7 +204,6 @@ export class Player {
 
 		body.clearShapes();
 		let rect = body.addRectangle(arrowWidth, arrowLength, 0, 0);
-		//TODO: Don't collide with us, once far enough away then collide with us (or time?)
 
 		(<any>body.data).player = this;
 		(<any>body.data).isWeapon = true;
@@ -237,7 +217,6 @@ export class Player {
 		body.applyImpulseLocal([vel.x, vel.y], 0, 0);
 
 		body.rotation = rotation - Math.PI / 2;
-		//this.arrow.rotation = rotation;
 	}
 
 	allowArrowCollection() {
@@ -245,7 +224,6 @@ export class Player {
 	}
 
 	returnArrow() {
-		//this.game.physics.p2.addConstraint(this.spearConstraint);
 		this.arrowForAim.visible = true;
 		this.arrowForAimBg.visible = true;
 		this.holdingArrow = true;
@@ -288,7 +266,6 @@ export class Player {
 		if (this.health < 0) {
 			this.health = 0;
 		}
-		console.log('takeDamage', damage);
 
 		let text = this.game.add.text(this.body.x, this.body.y, "" + damage, {
 			fontSize: 40 + damage,
@@ -301,11 +278,9 @@ export class Player {
 		text.alpha = 0;
 		text.scale.set(.4);
 		this.game.add.tween(text.scale)
-			//.from({x: .4, y: .4}, 0)
 			.to({ x: 1, y: 1 }, 100, undefined, true);
 
 		this.game.add.tween(text)
-			//.from({alpha: 0})
 			.to({ alpha: 1 }, 100, undefined, true)
 			.chain(this.game.add.tween(text)
 				.to({ alpha: 0 }, 600));
@@ -317,7 +292,6 @@ export class Player {
 
 	bodyMass: number;
 
-	//force = Math.random() * 20;
 	update() {
 		if (!this.pad.connected || this.pad.getButton(Phaser.Gamepad.BUTTON_0) == null) {
 			return;
@@ -328,7 +302,6 @@ export class Player {
 
 			let elapsedSeconds = this.game.time.elapsed / 1000;
 			if (this.pad.getButton(Phaser.Gamepad.BUTTON_0).isDown && this.turboAmount > elapsedSeconds) {
-				//console.log('turbo')
 				this.turboAmount -= elapsedSeconds;
 				scale *= 3;
 				this.body.mass = this.bodyMass * 3;
@@ -349,7 +322,7 @@ export class Player {
 					if (mag > 0.5) {
 						vel.normalize();
 						rotation = vel.angle(new Phaser.Point());
-						this.arrowForAim.rotation = rotation;// - Math.PI / 2;
+						this.arrowForAim.rotation = rotation;
 					} else {
 						vel = new Phaser.Point(0, 1);
 						vel.rotate(0, 0, this.arrowForAim.rotation);
@@ -378,9 +351,7 @@ export class Player {
 
 			let pt = new Phaser.Point(last.x, last.y);
 			let angle = pt.angle(new Phaser.Point(next.x, next.y));
-			(<Phaser.Physics.P2.Body>now.body).rotation = angle;// - Math.PI / 2;
-			//console.log(angle);
-			//debugger;
+			(<Phaser.Physics.P2.Body>now.body).rotation = angle;
 			last = <any>now;
 		}
 

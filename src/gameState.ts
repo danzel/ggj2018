@@ -26,10 +26,6 @@ export default class GameState extends Phaser.State {
 
 		if (!this.splatter) {
 			this.splatter = this.game.add.graphics();
-			//this.splatter = this.game.add.bitmapData(G.RenderWidth, G.RenderHeight);
-			//this.splatter.addToWorld();
-			//this.splatter.fill(255, 255, 255, 1);
-			//this.drawSplatter(0,0,0,0);
 
 		} else {
 			this.game.add.existing(this.splatter);
@@ -41,8 +37,6 @@ export default class GameState extends Phaser.State {
 		this.physics.startSystem(Phaser.Physics.P2JS);
 		this.physics.p2.setImpactEvents(true);
 
-		//this.physics.p2.gravity.y = 100;
-		//this.physics.p2.applyGravity = true;
 		this.physics.p2.restitution = 0.4;
 
 		this.backgroundGroup = this.game.add.group();
@@ -73,7 +67,6 @@ export default class GameState extends Phaser.State {
 
 		this.physics.p2.onBeginContact.removeAll();
 		this.physics.p2.onBeginContact.add((a, b, c, d, e) => {
-			//debugger;
 			if (this.losingPlayer === null) {
 
 				//Arrow returning
@@ -95,7 +88,7 @@ export default class GameState extends Phaser.State {
 
 				let force: number = 0;
 				let p: Player = null;
-				let weaponBody: any;//Phaser.Physics.P2.Body;
+				let weaponBody: any;
 
 				if (a.isPlayer && b.isWeapon && e[0].firstImpact) {
 					force = e[0].getVelocityAlongNormal();
@@ -123,7 +116,7 @@ export default class GameState extends Phaser.State {
 						let damagingSelf = p == weaponBody.player;
 
 						//Don't let players kill themselves
-						if (!damagingSelf || p.health > force) {
+						if ((!damagingSelf || p.health > force) && p.health > 0) {
 							p.takeDamage(force);
 							this.drawSplatter(force, a, b, e, p.health == 0);
 
@@ -133,29 +126,18 @@ export default class GameState extends Phaser.State {
 								let deadIndex = this.players.indexOf(p);
 
 								globalScore[killerIndex]++;
-								
+
 								let text = this.add.text(1920 / 2, 80, "Player " + (killerIndex + 1) + " Killed Player " + (deadIndex + 1), {
 									fontSize: 20,
 									fill: '#ff0000'
 								});
+
 								this.add.tween(text)
 									.to({}, 1000, undefined, true)
 									.onComplete.add(() => {
 										text.destroy();
 										this.replacePlayer(deadIndex);
 									});
-								/*setTimeout(() => {
-									this.splatter.parent.removeChild(this.splatter);
-									this.splatter.cacheAsBitmap = true;
-									this.game.state.start('game');
-								}, 1000);*/
-
-
-							/*
-								let index = this.players.indexOf(p);
-								this.losingPlayer = index;
-
-								*/
 							}
 						}
 					}
@@ -173,7 +155,7 @@ export default class GameState extends Phaser.State {
 		//Random weapon type that isn't the one we had before
 		let weaponType = Math.floor(Math.random() * (WeaponType.Count - 1));
 		if (weaponType >= oldWeaponType) {
-			weaponType ++;
+			weaponType++;
 		}
 
 		this.players[index] = new Player(this.game, this.backgroundGroup, this.players[index].pad, x, y, weaponType)
@@ -183,7 +165,7 @@ export default class GameState extends Phaser.State {
 		this.players.forEach(p => p.update());
 	}
 
-	preRender(){
+	preRender() {
 		this.players.forEach(p => p.preRender());
 	}
 
