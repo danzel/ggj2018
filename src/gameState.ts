@@ -32,8 +32,8 @@ export default class GameState extends Phaser.State {
 		this.physics.p2.restitution = 0.4;
 
 		this.players = [
-			new Player(this.game, this.game.input.gamepad.pad1, 100, 100, WeaponType.Arrow),
-			new Player(this.game, this.game.input.gamepad.pad2, G.RenderWidth - 40, 40, WeaponType.Arrow),
+			new Player(this.game, this.game.input.gamepad.pad1, 200, 200, WeaponType.Sword),
+			new Player(this.game, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Arrow),
 			new Player(this.game, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, WeaponType.Chain),
 			new Player(this.game, this.game.input.gamepad.pad4, 40, 720 - 40, WeaponType.Chain),
 		];

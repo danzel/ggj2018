@@ -7,9 +7,14 @@ export const TurboRechargeSecondsPerSecond = .7;
 
 export const MaxHealth = 100;
 
+const bodyRadius = 30;
+
 const arrowLength = 100;
 const arrowWidth = 40;
 const arrowSpeed = 80;
+
+const swordLength = 120;
+const swordWidth = 40;
 
 export class Player {
 	body: Phaser.Physics.P2.Body;
@@ -19,6 +24,8 @@ export class Player {
 
 	arrowForAim: Phaser.Graphics;
 	arrow: Phaser.Graphics;
+
+	sword: Phaser.Sprite;
 
 	turboAmount = MaxTurboTimeSeconds;
 	turboBar: Phaser.Graphics;
@@ -38,6 +45,9 @@ export class Player {
 			case WeaponType.Arrow:
 				this.createArrowAim();
 				break;
+			case WeaponType.Sword:
+				this.createSword();
+				break;
 		}
 
 		this.turboBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
@@ -50,7 +60,7 @@ export class Player {
 
 		this.body = <Phaser.Physics.P2.Body>this.sprite.body;
 		this.body.clearShapes();
-		this.body.addCircle(30);
+		this.body.addCircle(bodyRadius);
 
 		this.body.angularDamping = 1;
 		this.body.damping = .999;
@@ -76,7 +86,7 @@ export class Player {
 		//ChainNoCollide let chainGroup = this.game.physics.p2.createCollisionGroup();
 
 		let lastBody = this.body;
-		let lastBodySize = 30;
+		let lastBodySize = bodyRadius;
 		for (let i = 0; i < chainLength; i++) {
 			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius);
 			this.game.physics.p2.enable(chainLink, DebugRender);
@@ -119,6 +129,22 @@ export class Player {
 		(<any>this.maceBody.data).isWeapon = true;
 	}
 
+	private createSword() {
+		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6);
+		this.game.physics.p2.enable(this.sword, DebugRender);
+		let body = <Phaser.Physics.P2.Body>this.sword.body;
+
+		body.clearShapes();
+		let rect = body.addRectangle(swordWidth, swordLength);
+		//rect.sensor = true;
+		body.mass *= 0.5;
+
+		this.game.physics.p2.createRevoluteConstraint(this.body, [0, 0], body, [0, bodyRadius + swordLength * 0.6]);
+		
+		(<any>body.data).player = this;
+		(<any>body.data).isWeapon = true;
+	}
+
 	private createArrowAim() {
 		this.arrowForAim = this.game.add.graphics(this.body.x, this.body.y);
 
@@ -146,7 +172,7 @@ export class Player {
 		(<any>body.data).isWeapon = true;
 		(<any>body.data).isArrow = true;
 
-    	this.game.physics.p2.world.disableBodyCollision(body.data, this.body.data);
+		this.game.physics.p2.world.disableBodyCollision(body.data, this.body.data);
 
 		let vel = new Phaser.Point(0, -arrowSpeed);
 		vel.rotate(0, 0, rotation + Math.PI / 2);
@@ -155,7 +181,6 @@ export class Player {
 
 		body.rotation = rotation - Math.PI / 2;
 		//this.arrow.rotation = rotation;
-		
 	}
 
 	allowArrowCollection() {

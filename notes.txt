@@ -1,11 +1,13 @@
 
 
 
-Directly connected weapon (axe - no chain)
+hit blood
 
-Change chain length based on win / lose?
+Turbo for archer?
 
 Knockouts - Fix start/end game to have right players and end when everyone dead
+
+Change chain length based on win / lose?
 
 
 
@@ -28,3 +30,5 @@ Turbo button - increase weight and force.
 Damage base on swing strength
 Make chain not get caught in other persons chain
 Aimable weapon - spear / bow and arrow
+Directly connected weapon (Sword)
+

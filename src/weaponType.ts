@@ -1,4 +1,5 @@
 export enum WeaponType {
 	Chain,
-	Arrow
+	Arrow,
+	Sword
 }
