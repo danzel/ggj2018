@@ -13,6 +13,7 @@ let remainingLives = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	playerWeapons: WeaponType[][];
 	bowHitIndex: number;
 	bowHits: string[];
 	playerHitIndex: number;
@@ -70,7 +71,7 @@ export default class GameState extends Phaser.State {
 		Shuffle(this.playerHits);
 		this.playerHitIndex = 0;
 
-		
+
 		this.bowHits = [
 			'bow_hit_1',
 			'bow_hit_2',
@@ -82,6 +83,26 @@ export default class GameState extends Phaser.State {
 		];
 		Shuffle(this.bowHits);
 		this.bowHitIndex = 0;
+
+		this.playerWeapons = [
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
+		];
+		this.playerWeapons.forEach(w => {
+			let anyMatch = false;
+			do {
+				Shuffle(w);
+
+				anyMatch = false;
+				for (let i = 1; i < w.length; i++) {
+					if (w[i] == w[i - 1]) {
+						anyMatch = true;
+					}
+				}
+			} while (anyMatch);
+		})
 	}
 	losingPlayer: number = null;
 
@@ -112,10 +133,10 @@ export default class GameState extends Phaser.State {
 
 
 		this.players = [
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 200, 200, WeaponType.Sword),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Arrow),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, WeaponType.Chain),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 40, 720 - 40, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 200, 200, this.playerWeapons[0][remainingLives[0] - 1]),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, this.playerWeapons[1][remainingLives[1] - 1]),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, this.playerWeapons[2][remainingLives[2] - 1]),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 40, 720 - 40, this.playerWeapons[3][remainingLives[3] - 1]),
 		];
 
 
@@ -343,10 +364,7 @@ export default class GameState extends Phaser.State {
 		this.players[index].destroy();
 
 		//Random weapon type that isn't the one we had before
-		let weaponType = Math.floor(Math.random() * (WeaponType.Count - 1));
-		if (weaponType >= oldWeaponType) {
-			weaponType++;
-		}
+		let weaponType = this.playerWeapons[index][remainingLives[index] - 1];
 
 		this.players[index] = new Player(this.game, this.backgroundGroup, this.middleGroup, this.players[index].pad, x, y, weaponType)
 	}
