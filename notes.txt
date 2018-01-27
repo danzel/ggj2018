@@ -1,8 +1,13 @@
 blunt force transmission
 ========================
 
-Knockouts - Fix start/end game to have right players and end when everyone dead
+Splash screen
+- Game Name
+- Splatters of blood.
+- Players spinning in corners (????)
 - Show victory condition
+
+
 
 Screenshot for Voting sheet
 
@@ -64,4 +69,8 @@ Sounds
 - weapon clash
 - victory
 make sure everyone gets 2 goes at each weapon
+Make arrow fire off any back button
+desaturate health bars
+
+
 

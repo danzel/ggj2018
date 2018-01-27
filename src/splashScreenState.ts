@@ -92,10 +92,10 @@ export default class SplashScreenState extends Phaser.State {
 
 
 		this.players = [
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 200, 200, WeaponType.Chain),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Chain),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 300, 720 - 40, WeaponType.Sword),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 300, 720 - 40, WeaponType.Sword),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 100, 100, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 100, 100, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 200, 900, WeaponType.Sword),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 200, 900, WeaponType.Sword),
 		];
 	}
 

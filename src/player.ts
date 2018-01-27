@@ -75,6 +75,10 @@ export class Player {
 		this.healthBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40, middleGroup);
 		this.allThingsToDestroy.push(this.turboBar);
 		this.allThingsToDestroy.push(this.healthBar);
+
+		if (this.weaponType == WeaponType.Arrow) {
+			this.turboBar.visible = false;
+		}
 	}
 
 	destroy() {
@@ -267,9 +271,9 @@ export class Player {
 
 		this.turboBar.clear();
 		this.turboBar.beginFill(0xffffff);
-		this.turboBar.drawRect(-1, -1, 82, 12);
+		this.turboBar.drawRect(-2, -2, 84, 14);
 		this.turboBar.endFill();
-		this.turboBar.beginFill(0x0000ff);
+		this.turboBar.beginFill(0x888888);
 		this.turboBar.drawRect(0, 0, 80 * this.turboAmount / MaxTurboTimeSeconds, 10);
 		this.turboBar.endFill();
 	}
@@ -280,9 +284,9 @@ export class Player {
 
 		this.healthBar.clear();
 		this.healthBar.beginFill(0xffffff);
-		this.healthBar.drawRect(-1, -1, 82, 12);
+		this.healthBar.drawRect(-2, -2, 84, 14);
 		this.healthBar.endFill();
-		this.healthBar.beginFill(0xff0000);
+		this.healthBar.beginFill(0x000000);
 		this.healthBar.drawRect(0, 0, 80 * this.health / MaxHealth, 10);
 		this.healthBar.endFill();
 	}
