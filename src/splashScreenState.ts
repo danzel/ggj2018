@@ -59,44 +59,47 @@ export default class SplashScreenState extends Phaser.State {
 		});
 		this.startToPlay.anchor.setTo(0.5, 0.5);
 
-		this.add.text(400, 400, "Axe / Mace", {
+		this.add.text(400, 500, "Axe / Mace", {
 			font: '70px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(400, 480, "Spin with Left Stick", {
+		this.add.text(400, 580, "Spin with Left Stick", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(400, 540, "(A) Spin harder", {
+		this.add.text(400, 640, "(A) Spin harder", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
 
 		let rightText = 1100;
-		this.add.text(rightText, 400, "Bow", {
+		this.add.text(rightText, 500, "Bow", {
 			font: '70px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(rightText, 480, "Move with Left Stick", {
+		this.add.text(rightText, 580, "Move with Left Stick", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(rightText, 540, "Aim with Right Stick", {
+		this.add.text(rightText, 640, "Aim with Right Stick", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(rightText, 600, "(L/R) Fire", {
+		this.add.text(rightText, 700, "(L/R) Fire", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
 
 
 		this.players = [
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 100, 100, WeaponType.Chain),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 100, 100, WeaponType.Chain),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 200, 900, WeaponType.Sword),
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 200, 900, WeaponType.Sword),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 100, 100, WeaponType.Chain, true),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 100, 100, WeaponType.Chain, true),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 200, 900, WeaponType.Sword, true),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 200, 900, WeaponType.Sword, true),
 		];
+
+
+		this.add.sprite(0, 0, 'splash');
 	}
 
 	update() {

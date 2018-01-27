@@ -54,7 +54,7 @@ export class Player {
 	allThingsToDestroy = new Array<{ destroy: Function }>();
 	constraints = new Array<any>();
 
-	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, private middleGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType) {
+	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, private middleGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType, hideBars?: boolean) {
 		pad.deadZone = 0;
 
 		this.createBody(startX, startY);
@@ -76,8 +76,11 @@ export class Player {
 		this.allThingsToDestroy.push(this.turboBar);
 		this.allThingsToDestroy.push(this.healthBar);
 
-		if (this.weaponType == WeaponType.Arrow) {
+		if (this.weaponType == WeaponType.Arrow || hideBars) {
 			this.turboBar.visible = false;
+		}
+		if (hideBars) {
+			this.healthBar.visible = false;
 		}
 	}
 

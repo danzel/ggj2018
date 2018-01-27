@@ -36,6 +36,8 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('chain_border', require('./assets/images/chain_border.svg'));
 		this.load.image('mace_border', require('./assets/images/mace_border.svg'));
 
+		this.load.image('splash', require('./assets/images/splash.png'));
+		
 		this.load.image('NE', require('./assets/images/character/NE.svg'));
 		this.load.image('SE', require('./assets/images/character/SE.svg'));
 		this.load.image('NW', require('./assets/images/character/NW.svg'));
