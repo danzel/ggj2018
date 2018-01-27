@@ -252,7 +252,7 @@ export default class GameState extends Phaser.State {
 			this.players[index] = null;
 
 			let sprite = this.game.add.sprite(x, y, 'grave', undefined, this.backgroundGroup);
-			this.physics.p2.enable(sprite, G.DebugRender || true);
+			this.physics.p2.enable(sprite, G.DebugRender);
 			let body = <Phaser.Physics.P2.Body>sprite.body;
 			body.clearShapes();
 			body.addCircle(30);
@@ -308,7 +308,10 @@ export default class GameState extends Phaser.State {
 	drawSplatter(force: number, a, b, e, died: boolean) {
 
 		let ec = this.getCollisionCenter(e);
+		let targetScale = (10 + force) / 32;
 
+		const bloodTime = 300;
+		
 		var spread = 10 + force * 2;
 		let amount = Math.min(10, 3 + force);
 		for (let i = 0; i < amount; i++) {
@@ -317,29 +320,11 @@ export default class GameState extends Phaser.State {
 			let x = ec.x + xMod;
 			let y = ec.y + yMod;
 
-			//Underneath Blood
-			let sprite = this.add.sprite(x, y, 'blood_2', undefined, this.underBloodGroup);
-			sprite.anchor.set(0.5);
-
-			let r = ((128 + Math.random() * 70) | 0) * 0x10000;
-			sprite.tint = r;
-
-			const bloodTime = 300;
-
-			let targetScale = (10 + force) / 32;
-			sprite.scale.set(0.1);
-			this.game.add.tween(sprite.scale)
-				.to({ x: targetScale, y: targetScale }, bloodTime, Phaser.Easing.power2, true);
-
-			sprite.alpha = 0.1;
-			this.game.add.tween(sprite)
-				.to({ alpha: Math.random() * 0.1 + 0.9 }, bloodTime, Phaser.Easing.power2, true);
-			//sprite.destroy();//hackerman
-
 
 			//On top blood
-			sprite = this.add.sprite(ec.x, ec.y, 'blood_2', undefined, this.overBloodGroup);
+			let sprite = this.add.sprite(ec.x, ec.y, 'blood_p', undefined, this.overBloodGroup);
 			sprite.anchor.set(0.5);
+			let r = ((128 + Math.random() * 70) | 0) * 0x10000;
 			sprite.tint = r;
 
 			sprite.scale.set(0.3);
@@ -360,15 +345,41 @@ export default class GameState extends Phaser.State {
 						this.underBloodGroup = this.game.add.group(this.underBloodGroupForLotsOfBlood);
 					}
 				});
-
-
-
-
-
-			//this.splatter.beginFill(r);
-			//this.splatter.drawCircle(x, y, 10 + force);
-			//this.splatter.endFill();
 		}
+
+		//Underneath Blood
+		let x = ec.x;
+		let y = ec.y;
+		let sprite = this.add.sprite(x, y, 'blood_' + (Math.floor(Math.random() * 4 + 1)), undefined, this.underBloodGroup);
+		sprite.anchor.set(0.5);
+
+		//Angle based on hit angle
+		let anglePoint = new Phaser.Point(a.position[0], a.position[1]);
+		let angle = anglePoint.angle(new Phaser.Point(b.position[0], b.position[1]));
+
+		angle -= Math.PI /2;
+		//One of these is the weapon and one the player, reverse then
+		if (a.isPlayer) {
+			angle = angle + Math.PI;
+		}
+
+		sprite.rotation = angle;
+
+		var scaleScale = 4;
+		targetScale = (0.3 + (3 * force / 100)) / scaleScale;
+
+		const bloodTime2 = 200;
+		
+		let r = ((128 + Math.random() * 70) | 0) * 0x10000;
+		sprite.tint = r;
+		sprite.scale.set(0.3 / scaleScale);
+		this.game.add.tween(sprite.scale)
+			.to({ x: targetScale, y: targetScale }, bloodTime2, Phaser.Easing.Cubic.In, true);
+
+		sprite.alpha = 0.1;
+		this.game.add.tween(sprite)
+			.to({ alpha: Math.random() * 0.1 + 0.9 }, bloodTime2, Phaser.Easing.power2, true);
+
 		//this.splatter.cacheAsBitmap = true;
 		//this.underBloodGroup.cacheAsBitmap = true;
 	}

@@ -47,7 +47,7 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('SW_border', require('./assets/images/character/SW_border.svg'));
 
 		this.load.image('particle_1', require('./assets/images/sparks.svg'));
-		this.load.image('blood_2', require('./assets/images/blood_2.png'));
+		this.load.image('blood_p', require('./assets/images/blood_2.png'));
 
 		this.load.image('ah_shit', require('./assets/images/character/ah_shit.svg'));
 		this.load.image('grave', require('./assets/images/character/grave.svg'));
@@ -62,6 +62,11 @@ export default class LoadingState extends Phaser.State {
 		this.load.audio('taunt_5', require('./assets/sounds/taunts/tis_but_a_scratch.opus'));
 		this.load.audio('taunt_6', require('./assets/sounds/taunts/well_call_it_a_draw.opus'));
 
+		this.load.image('blood_1', require('./assets/images/blood/blood1.png'));
+		this.load.image('blood_2', require('./assets/images/blood/blood2.png'));
+		this.load.image('blood_3', require('./assets/images/blood/blood3.png'));
+		this.load.image('blood_4', require('./assets/images/blood/blood4.png'));
+		
 
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', {
 			font: '16px Arial',
