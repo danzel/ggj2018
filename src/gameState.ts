@@ -117,26 +117,43 @@ export default class GameState extends Phaser.State {
 					if (weaponBody.isArrow && weaponBody.player == p) {
 						p.returnArrow();
 					} else {
+						let damagingSelf = p == weaponBody.player;
 
-						p.takeDamage(force);
-						this.drawSplatter(force, a, b, e);
+						//Don't let players kill themselves
+						if (!damagingSelf || p.health > force) {
+							p.takeDamage(force);
+							this.drawSplatter(force, a, b, e, p.health == 0);
 
-						//check players for death or something
-						if (p.health <= 0) {
-							let index = this.players.indexOf(p);
-							this.losingPlayer = index;
+							//check players for death or something
+							if (p.health <= 0) {
+								let killerIndex = this.players.indexOf(weaponBody.player);
+								let deadIndex = this.players.indexOf(p);
 
-							this.add.text(1920 / 2, 80, "Player " + (this.losingPlayer + 1) + " LOSES", {
-								fontSize: 20,
-								fill: '#ff0000'
-							});
-							console.log('----------- gg ----------');
-							globalScore[this.losingPlayer]++;
-							setTimeout(() => {
-								this.splatter.parent.removeChild(this.splatter);
-								this.splatter.cacheAsBitmap = true;
-								this.game.state.start('game');
-							}, 1000);
+								globalScore[killerIndex]++;
+								
+								let text = this.add.text(1920 / 2, 80, "Player " + (killerIndex + 1) + " Killed Player " + (deadIndex + 1), {
+									fontSize: 20,
+									fill: '#ff0000'
+								});
+								this.add.tween(text)
+									.to({}, 1000, undefined, true)
+									.onComplete.add(() => {
+										text.destroy();
+										this.replacePlayer(deadIndex);
+									});
+								/*setTimeout(() => {
+									this.splatter.parent.removeChild(this.splatter);
+									this.splatter.cacheAsBitmap = true;
+									this.game.state.start('game');
+								}, 1000);*/
+
+
+							/*
+								let index = this.players.indexOf(p);
+								this.losingPlayer = index;
+
+								*/
+							}
 						}
 					}
 				}
@@ -144,11 +161,26 @@ export default class GameState extends Phaser.State {
 		});
 	}
 
+	replacePlayer(index: number) {
+		let x = this.players[index].body.x;
+		let y = this.players[index].body.y;
+		let oldWeaponType = this.players[index].weaponType;
+		this.players[index].destroy();
+
+		//Random weapon type that isn't the one we had before
+		let weaponType = Math.floor(Math.random() * (WeaponType.Count - 1));
+		if (weaponType >= oldWeaponType) {
+			weaponType ++;
+		}
+
+		this.players[index] = new Player(this.game, this.players[index].pad, x, y, weaponType)
+	}
+
 	update() {
 		this.players.forEach(p => p.update());
 	}
 
-	drawSplatter(force: number, a, b, e) {
+	drawSplatter(force: number, a, b, e, died: boolean) {
 
 		//http://www.html5gamedevs.com/topic/26125-p2-physics-contact-point-between-2-bodies/
 		let pos = e[0].bodyA.position;
@@ -167,5 +199,6 @@ export default class GameState extends Phaser.State {
 			this.splatter.drawCircle(x, y, 10 + force);
 			this.splatter.endFill();
 		}
+		this.splatter.cacheAsBitmap = true;
 	}
 }

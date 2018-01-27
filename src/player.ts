@@ -33,10 +33,13 @@ export class Player {
 	health = MaxHealth;
 	healthBar: Phaser.Graphics;
 
-	constructor(private game: Phaser.Game, private pad: Phaser.SinglePad, x: number, y: number, public weaponType: WeaponType) {
+	allThingsToDestroy = new Array<{ destroy: Function }>();
+	constraints = new Array<any>();
+
+	constructor(private game: Phaser.Game, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType) {
 		pad.deadZone = 0;
 
-		this.createBody(x, y);
+		this.createBody(startX, startY);
 
 		switch (weaponType) {
 			case WeaponType.Chain:
@@ -52,10 +55,23 @@ export class Player {
 
 		this.turboBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
 		this.healthBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
+		this.allThingsToDestroy.push(this.turboBar);
+		this.allThingsToDestroy.push(this.healthBar);
+	}
+
+	destroy() {
+		this.allThingsToDestroy.forEach(t => t.destroy());
+
+		this.constraints.forEach(c => this.game.physics.p2.removeConstraint(c));
+
+		if (this.arrow != null) {
+			this.arrow.destroy();
+		}
 	}
 
 	private createBody(x: number, y: number) {
 		this.sprite = this.game.add.sprite(x, y, 'mushroom2');
+		this.allThingsToDestroy.push(this.sprite);
 		this.game.physics.p2.enable(this.sprite, DebugRender);
 
 		this.body = <Phaser.Physics.P2.Body>this.sprite.body;
@@ -89,6 +105,7 @@ export class Player {
 		let lastBodySize = bodyRadius;
 		for (let i = 0; i < chainLength; i++) {
 			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius);
+			this.allThingsToDestroy.push(chainLink);
 			this.game.physics.p2.enable(chainLink, DebugRender);
 			let chainBody = <Phaser.Physics.P2.Body>chainLink.body;
 			chainBody.clearShapes();
@@ -100,7 +117,8 @@ export class Player {
 			//chainBody.damping = 0.6;
 
 			//Link to last
-			this.game.physics.p2.createDistanceConstraint(lastBody, chainBody, lastBodySize + chainRadius, undefined, undefined, chainForce);
+			let ctr = this.game.physics.p2.createDistanceConstraint(lastBody, chainBody, lastBodySize + chainRadius, undefined, undefined, chainForce);
+			this.constraints.push(ctr);
 			//if (lastBody != this.body) {
 			//	game.physics.p2.createRevoluteConstraint(lastBody, [0, lastBodySize], chainBody, [0, -chainRadius]);
 			//}
@@ -116,13 +134,15 @@ export class Player {
 		//game.physics.p2.createSpring(this.body, lastBody, dist, 4);
 
 		let mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize);
+		this.allThingsToDestroy.push(mace);
 		this.game.physics.p2.enable(mace, DebugRender);
 		this.maceBody = <Phaser.Physics.P2.Body>mace.body;
 		this.maceBody.clearShapes();
 		this.maceBody.addCircle(maceRadius);
 		this.maceBody.mass *= 0.5;
 		this.maceBody.fixedRotation = true;
-		this.game.physics.p2.createDistanceConstraint(lastBody, this.maceBody, lastBodySize + maceRadius, undefined, undefined, chainForce);
+		let ctr = this.game.physics.p2.createDistanceConstraint(lastBody, this.maceBody, lastBodySize + maceRadius, undefined, undefined, chainForce);
+		this.constraints.push(ctr);
 
 
 		(<any>this.maceBody.data).player = this;
@@ -131,6 +151,7 @@ export class Player {
 
 	private createSword() {
 		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6);
+		this.allThingsToDestroy.push(this.sword);
 		this.game.physics.p2.enable(this.sword, DebugRender);
 		let body = <Phaser.Physics.P2.Body>this.sword.body;
 
@@ -139,14 +160,17 @@ export class Player {
 		//rect.sensor = true;
 		body.mass *= 0.5;
 
-		this.game.physics.p2.createRevoluteConstraint(this.body, [0, 0], body, [0, bodyRadius + swordLength * 0.6]);
-		
+		let ctr = this.game.physics.p2.createRevoluteConstraint(this.body, [0, 0], body, [0, bodyRadius + swordLength * 0.6]);
+		this.constraints.push(ctr);
+
+
 		(<any>body.data).player = this;
 		(<any>body.data).isWeapon = true;
 	}
 
 	private createArrowAim() {
 		this.arrowForAim = this.game.add.graphics(this.body.x, this.body.y);
+		this.allThingsToDestroy.push(this.arrowForAim);
 
 		this.arrowForAim.beginFill(0xffffff)
 		this.arrowForAim.drawTriangle([new Phaser.Point(0, -arrowLength / 2), new Phaser.Point(arrowWidth / 2, arrowLength / 2), new Phaser.Point(-arrowWidth / 2, arrowLength / 2)]);
@@ -263,49 +287,50 @@ export class Player {
 			return;
 		}
 
-		let scale = 5;
+		if (this.health > 0) {
+			let scale = 5;
 
-		let elapsedSeconds = this.game.time.elapsed / 1000;
-		if (this.pad.getButton(Phaser.Gamepad.BUTTON_0).isDown && this.turboAmount > elapsedSeconds) {
-			//console.log('turbo')
-			this.turboAmount -= elapsedSeconds;
-			scale *= 3;
-			this.body.mass = this.bodyMass * 3;
-		} else {
-			this.turboAmount = Math.min(MaxTurboTimeSeconds, this.turboAmount + elapsedSeconds * TurboRechargeSecondsPerSecond);
-			this.body.mass = this.bodyMass;
-		}
+			let elapsedSeconds = this.game.time.elapsed / 1000;
+			if (this.pad.getButton(Phaser.Gamepad.BUTTON_0).isDown && this.turboAmount > elapsedSeconds) {
+				//console.log('turbo')
+				this.turboAmount -= elapsedSeconds;
+				scale *= 3;
+				this.body.mass = this.bodyMass * 3;
+			} else {
+				this.turboAmount = Math.min(MaxTurboTimeSeconds, this.turboAmount + elapsedSeconds * TurboRechargeSecondsPerSecond);
+				this.body.mass = this.bodyMass;
+			}
 
-		if (this.weaponType == WeaponType.Arrow) {
-			this.arrowForAim.x = this.sprite.x;
-			this.arrowForAim.y = this.sprite.y;
-			if (this.holdingArrow) {
+			if (this.weaponType == WeaponType.Arrow) {
+				this.arrowForAim.x = this.sprite.x;
+				this.arrowForAim.y = this.sprite.y;
+				if (this.holdingArrow) {
 
-				//Point the arrowForAim in the right direction
-				let rotation = this.arrowForAim.rotation;
-				let vel = new Phaser.Point(this.pad.axis(2), this.pad.axis(3));
-				let mag = vel.getMagnitude();
-				if (mag > 0.5) {
-					vel.normalize();
-					rotation = vel.angle(new Phaser.Point());
-					this.arrowForAim.rotation = rotation - Math.PI / 2;
-				} else {
-					vel = new Phaser.Point(0, 1);
-					vel.rotate(0, 0, this.arrowForAim.rotation);
-				}
+					//Point the arrowForAim in the right direction
+					let rotation = this.arrowForAim.rotation;
+					let vel = new Phaser.Point(this.pad.axis(2), this.pad.axis(3));
+					let mag = vel.getMagnitude();
+					if (mag > 0.5) {
+						vel.normalize();
+						rotation = vel.angle(new Phaser.Point());
+						this.arrowForAim.rotation = rotation - Math.PI / 2;
+					} else {
+						vel = new Phaser.Point(0, 1);
+						vel.rotate(0, 0, this.arrowForAim.rotation);
+					}
 
 
-				if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown) {
-					this.holdingArrow = false;
-					this.arrowForAim.visible = false;
+					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown) {
+						this.holdingArrow = false;
+						this.arrowForAim.visible = false;
 
-					this.createArrow(rotation);
+						this.createArrow(rotation);
+					}
 				}
 			}
+
+			this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
 		}
-
-		this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
-
 		this.updateTurboBar();
 		this.updateHealthBar();
 	}
