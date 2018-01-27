@@ -1,17 +1,14 @@
 Knockouts - Fix start/end game to have right players and end when everyone dead
 - player names
+- end the game
 - Show victor
 - Show victory condition
 
-death:
-- speech bubble
-- lie down
-
-charge move
-
-Maybe 4th weapon? (or two lengths of mace)
 
 Sounds
+
+charge move
+Maybe 4th weapon? (or two lengths of mace)
 
 Drop weapon when die
 
@@ -50,5 +47,7 @@ try different blood splatters
 Arrow require button press
 shadows for characters?
 Better Sparks when weapons clash
-
+death:
+- speech bubble
+- lie down
 

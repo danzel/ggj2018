@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser-ce';
 import * as WebFont from 'webfontloader';
-import { Player } from './player';
+import { Player, TimeToDie } from './player';
 import * as G from './globals';
 import { WeaponType } from './weaponType';
 
@@ -182,7 +182,7 @@ export default class GameState extends Phaser.State {
 								});
 
 								this.add.tween(text)
-									.to({}, 1000, undefined, true)
+									.to({}, TimeToDie * 1.5, undefined, true)
 									.onComplete.add(() => {
 										text.destroy();
 										this.replacePlayer(deadIndex);

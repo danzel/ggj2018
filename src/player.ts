@@ -7,6 +7,8 @@ export const TurboRechargeSecondsPerSecond = .7;
 
 export const MaxHealth = 100;
 
+export const TimeToDie = 1000;
+
 const bodyRadius = 30;
 
 const arrowLength = 100;
@@ -18,10 +20,13 @@ const swordWidth = 40;
 
 const shadowOffset = 44;
 
+const deathBubbleOffset = -100;
+
 export class Player {
 	body: Phaser.Physics.P2.Body;
 	sprite: Phaser.Sprite;
 	shadow: Phaser.Sprite;
+	deathBubble: Phaser.Sprite;
 
 	chains = new Array<Phaser.Sprite>();
 	mace: Phaser.Sprite;
@@ -279,6 +284,7 @@ export class Player {
 	}
 
 	takeDamage(damage: number) {
+		//damage = this.health;
 		this.health -= damage;
 		if (this.health < 0) {
 			this.health = 0;
@@ -304,6 +310,25 @@ export class Player {
 
 		if (damage > 20) {
 			this.game.camera.shake(damage * 0.001, 200);
+		}
+
+		if (this.health == 0) {
+			let timeToDie = TimeToDie * 0.7;
+
+			//Lie down
+			this.game.add.tween(this.sprite)
+				.to({ rotation: Math.PI / 2 }, timeToDie, undefined, true);
+			this.game.add.tween(this.sprite.anchor)
+				.to({ x: 0, y: 0.8 }, timeToDie, undefined, true);
+			this.game.add.tween(this.spriteBg.anchor)
+				.to({ x: 0, y: 0.8 }, timeToDie, undefined, true);
+			this.game.add.tween(this.shadow.scale)
+				.to({ x: 0.7, y: 0.7 }, timeToDie, undefined, true);
+
+			//swear about it
+			this.deathBubble = this.game.add.sprite(this.sprite.x, this.sprite.y + deathBubbleOffset, 'ah_shit');
+			this.deathBubble.scale.set(0.7);
+			this.allThingsToDestroy.push(this.deathBubble);
 		}
 	}
 
@@ -379,6 +404,10 @@ export class Player {
 		this.copyPasta(this.spriteBg, this.sprite);
 		this.shadow.x = this.sprite.x;
 		this.shadow.y = this.sprite.y + shadowOffset;
+		if (this.deathBubble) {
+			this.deathBubble.x = this.sprite.x;
+			this.deathBubble.y = this.sprite.y + deathBubbleOffset;
+		}
 
 		if (this.sword) {
 			this.copyPasta(this.swordBg, this.sword);
