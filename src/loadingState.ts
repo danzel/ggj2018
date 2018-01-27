@@ -5,6 +5,7 @@ declare function require(url: string): string;
 
 export default class LoadingState extends Phaser.State {
 	init() {
+		this.game.stage.backgroundColor = '#ffffff';
 		this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.stage.disableVisibilityChange = true;

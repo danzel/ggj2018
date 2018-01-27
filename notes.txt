@@ -1,8 +1,5 @@
 
 
-
-hit blood
-
 Turbo for archer?
 
 Knockouts - Fix start/end game to have right players and end when everyone dead
@@ -31,4 +28,5 @@ Damage base on swing strength
 Make chain not get caught in other persons chain
 Aimable weapon - spear / bow and arrow
 Directly connected weapon (Sword)
+hit blood
 

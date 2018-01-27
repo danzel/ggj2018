@@ -12,6 +12,7 @@ let globalScore = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	splatter: Phaser.Graphics;
 	players: Player[];
 	init() {
 		//TODO
@@ -21,8 +22,20 @@ export default class GameState extends Phaser.State {
 
 	preload() {
 		this.game.camera.shake(0, 0);
-		let text = this.add.text(this.world.centerX, this.world.centerY, 'Loaded, lets go ', { font: '42px Bangers', fill: '#dddddd', align: 'center' });
-		text.anchor.setTo(0.5, 0.5);
+
+		if (!this.splatter) {
+			this.splatter = this.game.add.graphics();
+			//this.splatter = this.game.add.bitmapData(G.RenderWidth, G.RenderHeight);
+			//this.splatter.addToWorld();
+			//this.splatter.fill(255, 255, 255, 1);
+			//this.drawSplatter(0,0,0,0);
+
+		} else {
+			this.game.add.existing(this.splatter);
+		}
+
+		//let text = this.add.text(this.world.centerX, this.world.centerY, 'Loaded, lets go ', { font: '42px Bangers', fill: '#999999', align: 'center' });
+		//text.anchor.setTo(0.5, 0.5);
 
 		this.physics.startSystem(Phaser.Physics.P2JS);
 		this.physics.p2.setImpactEvents(true);
@@ -106,6 +119,7 @@ export default class GameState extends Phaser.State {
 					} else {
 
 						p.takeDamage(force);
+						this.drawSplatter(force, a, b, e);
 
 						//check players for death or something
 						if (p.health <= 0) {
@@ -118,7 +132,11 @@ export default class GameState extends Phaser.State {
 							});
 							console.log('----------- gg ----------');
 							globalScore[this.losingPlayer]++;
-							setTimeout(() => { this.game.state.start('game') }, 1000);
+							setTimeout(() => {
+								this.splatter.parent.removeChild(this.splatter);
+								this.splatter.cacheAsBitmap = true;
+								this.game.state.start('game');
+							}, 1000);
 						}
 					}
 				}
@@ -128,5 +146,26 @@ export default class GameState extends Phaser.State {
 
 	update() {
 		this.players.forEach(p => p.update());
+	}
+
+	drawSplatter(force: number, a, b, e) {
+
+		//http://www.html5gamedevs.com/topic/26125-p2-physics-contact-point-between-2-bodies/
+		let pos = e[0].bodyA.position;
+		let pt = e[0].contactPointA;
+		let cx = this.game.physics.p2.mpxi(pos[0] + pt[0]);
+		let cy = this.game.physics.p2.mpxi(pos[1] + pt[1]);
+
+		var spread = 10 + force * 2;
+		let amount = Math.min(10, 3 + force);
+		for (let i = 0; i < amount; i++) {
+			let x = cx + (Math.random() * spread - spread / 2);
+			let y = cy + (Math.random() * spread - spread / 2);
+
+			let r = ((128 + Math.random() * 70) | 0) * 0x10000;
+			this.splatter.beginFill(r);
+			this.splatter.drawCircle(x, y, 10 + force);
+			this.splatter.endFill();
+		}
 	}
 }
