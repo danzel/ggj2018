@@ -12,8 +12,13 @@ let globalScore = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
-	backgroundGroup: Phaser.Group;
+	middleGroup: Phaser.Group;
+	overBloodGroup: Phaser.Group;
 	splatter: Phaser.Graphics;
+	underBloodGroup: Phaser.Group;
+
+	backgroundGroup: Phaser.Group;
+	sparkEmitter: Phaser.Particles.Arcade.Emitter;
 	players: Player[];
 	init() {
 		//TODO
@@ -39,21 +44,42 @@ export default class GameState extends Phaser.State {
 
 		this.physics.p2.restitution = 0.4;
 
+		this.underBloodGroup = this.game.add.group();
+
 		this.backgroundGroup = this.game.add.group();
+		this.middleGroup = this.game.add.group();
+
+
 
 		this.players = [
-			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad1, 200, 200, WeaponType.Sword),
-			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Arrow),
-			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, WeaponType.Chain),
-			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad4, 40, 720 - 40, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 200, 200, WeaponType.Sword),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Arrow),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 40, 720 - 40, WeaponType.Chain),
 		];
 
-		let sprite = this.game.add.sprite(G.RenderWidth / 2, G.RenderHeight / 2);
-		this.physics.p2.enable(sprite, G.DebugRender);
-		let body = <Phaser.Physics.P2.Body>sprite.body;
-		body.clearShapes();
-		body.addCircle(30);
-		body.damping = 0.6;
+
+		this.sparkEmitter = this.game.add.emitter(0, 0, 1000);
+		(<any>this.sparkEmitter).blendMode = PIXI.blendModes.DARKEN;
+		this.sparkEmitter.setAlpha(1, 0, 400);
+		this.sparkEmitter.setRotation(0, 360);
+		this.sparkEmitter.setXSpeed(-400, 400);
+		this.sparkEmitter.setYSpeed(-400, 400);
+
+		this.sparkEmitter.makeParticles('particle_1');
+
+		this.overBloodGroup = this.game.add.group();
+
+
+		//Random circle
+		/*{
+			let sprite = this.game.add.sprite(G.RenderWidth / 2, G.RenderHeight / 2);
+			this.physics.p2.enable(sprite, G.DebugRender);
+			let body = <Phaser.Physics.P2.Body>sprite.body;
+			body.clearShapes();
+			body.addCircle(30);
+			body.damping = 0.6;
+		}*/
 
 		if (globalScore.some(s => s != 0)) {
 			this.add.text(1920 / 2, 40, globalScore[0] + ", " + globalScore[1] + ", " + globalScore[2] + ", " + globalScore[3], {
@@ -83,6 +109,13 @@ export default class GameState extends Phaser.State {
 						a.player.returnArrow();
 						return;
 					}
+				}
+
+				if (a.isWeapon && b.isWeapon) {
+					let ec = this.getCollisionCenter(e);
+					this.sparkEmitter.x = ec.x;
+					this.sparkEmitter.y = ec.y;
+					this.sparkEmitter.start(true, 400, null, 10);
 				}
 
 
@@ -158,7 +191,7 @@ export default class GameState extends Phaser.State {
 			weaponType++;
 		}
 
-		this.players[index] = new Player(this.game, this.backgroundGroup, this.players[index].pad, x, y, weaponType)
+		this.players[index] = new Player(this.game, this.backgroundGroup, this.middleGroup, this.players[index].pad, x, y, weaponType)
 	}
 
 	update() {
@@ -171,23 +204,70 @@ export default class GameState extends Phaser.State {
 
 	drawSplatter(force: number, a, b, e, died: boolean) {
 
-		//http://www.html5gamedevs.com/topic/26125-p2-physics-contact-point-between-2-bodies/
-		let pos = e[0].bodyA.position;
-		let pt = e[0].contactPointA;
-		let cx = this.game.physics.p2.mpxi(pos[0] + pt[0]);
-		let cy = this.game.physics.p2.mpxi(pos[1] + pt[1]);
+		let ec = this.getCollisionCenter(e);
 
 		var spread = 10 + force * 2;
 		let amount = Math.min(10, 3 + force);
 		for (let i = 0; i < amount; i++) {
-			let x = cx + (Math.random() * spread - spread / 2);
-			let y = cy + (Math.random() * spread - spread / 2);
+			let xMod = (Math.random() * spread - spread / 2);
+			let yMod = (Math.random() * spread - spread / 2);
+			let x = ec.x + xMod;
+			let y = ec.y + yMod;
+
+			//Underneath Blood
+			let sprite = this.add.sprite(x, y, 'blood_2', undefined, this.underBloodGroup);
+			sprite.anchor.set(0.5);
 
 			let r = ((128 + Math.random() * 70) | 0) * 0x10000;
-			this.splatter.beginFill(r);
-			this.splatter.drawCircle(x, y, 10 + force);
-			this.splatter.endFill();
+			sprite.tint = r;
+
+			const bloodTime = 300;
+
+			let targetScale = (10 + force) / 32;
+			sprite.scale.set(0.1);
+			this.game.add.tween(sprite.scale)
+				.to({ x: targetScale, y: targetScale }, bloodTime, Phaser.Easing.power2, true);
+
+			sprite.alpha = 0.1;
+			this.game.add.tween(sprite)
+				.to({ alpha: Math.random() * 0.1 + 0.9 }, bloodTime, Phaser.Easing.power2, true);
+			//sprite.destroy();//hackerman
+
+
+			//On top blood
+			sprite = this.add.sprite(ec.x, ec.y, 'blood_2', undefined, this.overBloodGroup);
+			sprite.anchor.set(0.5);
+			sprite.tint = r;
+
+			sprite.scale.set(0.3);
+			this.game.add.tween(sprite.scale)
+				.to({ x: targetScale, y: targetScale }, bloodTime, Phaser.Easing.power2, true);
+
+			sprite.alpha = 0.9;
+			this.game.add.tween(sprite)
+				.to({ alpha: 0 }, bloodTime, Phaser.Easing.Cubic.Out, true)
+			this.game.add.tween(sprite)
+				.to({ x: ec.x + xMod * 3, y: ec.y + yMod * 3 }, bloodTime, Phaser.Easing.Cubic.In, true)
+				.onComplete.add(() => sprite.destroy());
+
+
+
+
+
+			//this.splatter.beginFill(r);
+			//this.splatter.drawCircle(x, y, 10 + force);
+			//this.splatter.endFill();
 		}
-		this.splatter.cacheAsBitmap = true;
+		//this.splatter.cacheAsBitmap = true;
+		//this.underBloodGroup.cacheAsBitmap = true;
+	}
+
+	getCollisionCenter(e) {
+		//http://www.html5gamedevs.com/topic/26125-p2-physics-contact-point-between-2-bodies/
+		let pos = e[0].bodyA.position;
+		let pt = e[0].contactPointA;
+		let x = this.game.physics.p2.mpxi(pos[0] + pt[0]);
+		let y = this.game.physics.p2.mpxi(pos[1] + pt[1]);
+		return { x, y };
 	}
 }

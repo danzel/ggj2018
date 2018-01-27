@@ -1,12 +1,11 @@
-try different blood splatters
-
-Sparks when weapons clash
 
 Knockouts - Fix start/end game to have right players and end when everyone dead
 - player names
 - Show score
 - Show victor
 - Show victory condition
+
+Better Sparks when weapons clash
 
 charge move
 
@@ -47,4 +46,5 @@ Make chain not get caught in other persons chain
 Aimable weapon - spear / bow and arrow
 Directly connected weapon (Sword)
 hit blood
+try different blood splatters
 

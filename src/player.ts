@@ -45,7 +45,7 @@ export class Player {
 	allThingsToDestroy = new Array<{ destroy: Function }>();
 	constraints = new Array<any>();
 
-	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType) {
+	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, private middleGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType) {
 		pad.deadZone = 0;
 
 		this.createBody(startX, startY);
@@ -62,8 +62,8 @@ export class Player {
 				break;
 		}
 
-		this.turboBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
-		this.healthBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40);
+		this.turboBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40, middleGroup);
+		this.healthBar = this.game.add.graphics(this.sprite.x, this.sprite.y - 40, middleGroup);
 		this.allThingsToDestroy.push(this.turboBar);
 		this.allThingsToDestroy.push(this.healthBar);
 	}
@@ -80,7 +80,7 @@ export class Player {
 	}
 
 	private createBody(x: number, y: number) {
-		this.sprite = this.game.add.sprite(x, y, 'NE');
+		this.sprite = this.game.add.sprite(x, y, 'NE', undefined, this.middleGroup);
 		this.sprite.scale.set(0.5)
 		this.allThingsToDestroy.push(this.sprite);
 		this.game.physics.p2.enable(this.sprite, DebugRender);
@@ -116,7 +116,7 @@ export class Player {
 		let lastBody = this.body;
 		let lastBodySize = bodyRadius;
 		for (let i = 0; i < chainLength; i++) {
-			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius, 'chain');
+			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius, 'chain', undefined, this.middleGroup);
 			chainLink.scale.set(0.15);
 			this.chains.push(chainLink);
 			this.allThingsToDestroy.push(chainLink);
@@ -141,7 +141,7 @@ export class Player {
 			lastBodySize = chainRadius;
 		}
 
-		this.mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace');
+		this.mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace', undefined, this.middleGroup);
 		this.mace.scale.set(0.4);
 		this.allThingsToDestroy.push(this.mace);
 
@@ -165,7 +165,7 @@ export class Player {
 	}
 
 	private createSword() {
-		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6, 'axe');
+		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6, 'axe', undefined, this.middleGroup);
 		this.swordBg = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6, 'axe_border', undefined, this.backgroundGroup);
 		this.swordBg.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.sword);
@@ -187,7 +187,7 @@ export class Player {
 	}
 
 	private createArrowAim() {
-		this.arrowForAim = this.game.add.sprite(this.body.x, this.body.y, 'bow');
+		this.arrowForAim = this.game.add.sprite(this.body.x, this.body.y, 'bow', undefined, this.middleGroup);
 		this.arrowForAim.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.arrowForAim);
 
@@ -197,7 +197,7 @@ export class Player {
 	}
 
 	private createArrow(rotation: number) {
-		this.arrow = this.game.add.sprite(this.body.x, this.body.y, 'arrow');
+		this.arrow = this.game.add.sprite(this.body.x, this.body.y, 'arrow', undefined, this.middleGroup);
 		this.arrow.scale.set(0.8);
 
 		this.arrowBg = this.game.add.sprite(this.body.x, this.body.y, 'arrow_border', undefined, this.backgroundGroup);
@@ -274,9 +274,9 @@ export class Player {
 		}
 
 		let text = this.game.add.text(this.body.x, this.body.y, "" + damage, {
-			fontSize: 40 + damage,
+			fontSize: 50 + damage,
 			font: 'impact',
-			fill: '#ff0000'
+			fill: '#000000'
 		});
 		text.anchor.set(0.5);
 
