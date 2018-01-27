@@ -377,7 +377,14 @@ export class Player {
 						vel.rotate(0, 0, this.arrowForAim.rotation);
 					}
 
-					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown && !this.wasHoldingBumper) {
+					let bumperIsDown = [
+						this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown, 
+						this.pad.getButton(Phaser.Gamepad.XBOX360_LEFT_BUMPER).isDown, 
+						this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER).isDown, 
+						this.pad.getButton(Phaser.Gamepad.XBOX360_LEFT_TRIGGER).isDown
+					].some(a => a);
+
+					if (bumperIsDown && !this.wasHoldingBumper) {
 						this.wasHoldingBumper = true;
 						this.holdingArrow = false;
 						this.arrowForAim.visible = false;
@@ -386,7 +393,7 @@ export class Player {
 						this.createArrow(rotation);
 					}
 
-					if (!this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown) {
+					if (!bumperIsDown) {
 						this.wasHoldingBumper = false;
 					}
 				}
