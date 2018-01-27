@@ -22,6 +22,8 @@ export default class LoadingState extends Phaser.State {
 		})
 
 		this.load.image('mushroom2', require('./assets/images/mushroom2.png'));
+		this.load.image('mace', require('./assets/images/mace.svg'));
+		this.load.image('chain', require('./assets/images/chain.svg'));
 
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);

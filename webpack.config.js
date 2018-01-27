@@ -42,6 +42,7 @@ module.exports = {
 			{ test: /\.tsx?$/, loader: 'ts-loader' },
 			{ test: /\.css$/, loader: ExtractTextPlugin.extract("css-loader") },
 			{ test: /\.png$/, loader: 'file-loader?name=[hash].[ext]' },
+			{ test: /\.svg$/, loader: 'file-loader?name=[hash].[ext]' },
 			{ test: /\.m4a$/, loader: 'file-loader?name=[hash].[ext]' },
 		]
 	},

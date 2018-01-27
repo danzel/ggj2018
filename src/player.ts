@@ -20,6 +20,7 @@ export class Player {
 	body: Phaser.Physics.P2.Body;
 	sprite: Phaser.Sprite;
 
+	chains = new Array<Phaser.Sprite>();
 	maceBody: Phaser.Physics.P2.Body;
 
 	arrowForAim: Phaser.Graphics;
@@ -104,7 +105,9 @@ export class Player {
 		let lastBody = this.body;
 		let lastBodySize = bodyRadius;
 		for (let i = 0; i < chainLength; i++) {
-			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius);
+			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius, 'chain');
+			chainLink.scale.set(0.2);
+			this.chains.push(chainLink);
 			this.allThingsToDestroy.push(chainLink);
 			this.game.physics.p2.enable(chainLink, DebugRender);
 			let chainBody = <Phaser.Physics.P2.Body>chainLink.body;
@@ -133,7 +136,8 @@ export class Player {
 
 		//game.physics.p2.createSpring(this.body, lastBody, dist, 4);
 
-		let mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize);
+		let mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace');
+		mace.scale.set(0.4);
 		this.allThingsToDestroy.push(mace);
 		this.game.physics.p2.enable(mace, DebugRender);
 		this.maceBody = <Phaser.Physics.P2.Body>mace.body;
@@ -331,6 +335,20 @@ export class Player {
 
 			this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
 		}
+
+		let last = this.body;
+		for (var i = 0; i < this.chains.length; i++) {
+			let now = this.chains[i];
+			let next = (i == this.chains.length - 1) ? this.maceBody : this.chains[i + 1];
+
+			let pt = new Phaser.Point(last.x, last.y);
+			let angle = pt.angle(new Phaser.Point(next.x, next.y));
+			(<Phaser.Physics.P2.Body>now.body).rotation = angle;// - Math.PI / 2;
+			//console.log(angle);
+			//debugger;
+			last = <any>now;
+		}
+
 		this.updateTurboBar();
 		this.updateHealthBar();
 	}
