@@ -334,6 +334,9 @@ export class Player {
 
 	bodyMass: number;
 
+
+	wasHoldingBumper = false;
+
 	update() {
 		if (!this.pad.connected || this.pad.getButton(Phaser.Gamepad.BUTTON_0) == null) {
 			return;
@@ -370,12 +373,17 @@ export class Player {
 						vel.rotate(0, 0, this.arrowForAim.rotation);
 					}
 
-					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).justPressed(20)) {
+					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown && !this.wasHoldingBumper) {
+						this.wasHoldingBumper = true;
 						this.holdingArrow = false;
 						this.arrowForAim.visible = false;
 						this.arrowForAimBg.visible = false;
 
 						this.createArrow(rotation);
+					}
+
+					if (!this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown) {
+						this.wasHoldingBumper = false;
 					}
 				}
 			}
