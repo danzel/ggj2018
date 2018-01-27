@@ -63,9 +63,10 @@ export default class GameState extends Phaser.State {
 
 
 		this.sparkEmitter = this.game.add.emitter(0, 0, 1000);
-		(<any>this.sparkEmitter).blendMode = PIXI.blendModes.DARKEN;
+		//(<any>this.sparkEmitter).blendMode = PIXI.blendModes.DARKEN;
 		this.sparkEmitter.setAlpha(1, 0, 400);
 		this.sparkEmitter.setRotation(0, 360);
+		this.sparkEmitter.setScale(.3,.3,.3,.3)
 		this.sparkEmitter.setXSpeed(-400, 400);
 		this.sparkEmitter.setYSpeed(-400, 400);
 
