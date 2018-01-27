@@ -5,6 +5,7 @@ import './css/reset.css';
 
 import GameState from './gameState';
 import LoadingState from './loadingState';
+import SplashScreenState from './splashScreenState';
 import * as G from './globals';
 
 new GameState();
@@ -20,6 +21,7 @@ class SimpleGame {
 		this.game = new Phaser.Game(G.RenderWidth, G.RenderHeight, Phaser.AUTO, "content");
 
 		this.game.state.add('loading', LoadingState);
+		this.game.state.add('splashscreen', SplashScreenState);
 		this.game.state.add('game', GameState);
 		this.game.state.start('loading');
 	}

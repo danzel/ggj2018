@@ -1,16 +1,24 @@
 Knockouts - Fix start/end game to have right players and end when everyone dead
-- player names
 - end the game
 - Show victor
 - Show victory condition
 
+make sure everyone gets 2 goes at each weapon
+
+blood slowdown - need to move blood sprites out
+aim it by the direction of the weapon
 
 Sounds
+- weapon clash
+- victory
 
 charge move
 Maybe 4th weapon? (or two lengths of mace)
 
 Drop weapon when die
+
+blunt force transmission
+
 
 Probably won't try
 ====================

@@ -6,13 +6,14 @@ import { WeaponType } from './weaponType';
 import { Shuffle } from './shuffle';
 
 
-let globalScore = [
-	0, 0, 0, 0
+let remainingLives = [
+	G.InitialLives, G.InitialLives, G.InitialLives, G.InitialLives
 ];
 
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	nameText: Phaser.Text[];
 	tauntsIndex: number;
 	taunts: string[];
 	scoreText: Phaser.Text[];
@@ -100,26 +101,53 @@ export default class GameState extends Phaser.State {
 			body.damping = 0.6;
 		}*/
 
-		this.scoreText = [
-			this.add.text(80, 80, "0", {
+		this.nameText = [
+			this.add.text(80, 80 - 50, G.Names[0], {
 				fontSize: 60,
+				font: G.FontName,
 				fill: '#000000'
 			}),
-			this.add.text(G.RenderWidth - 80, 80, "0", {
+			this.add.text(G.RenderWidth - 80, 80 - 50, G.Names[1], {
 				fontSize: 60,
+				font: G.FontName,
 				fill: '#000000'
 			}),
-			this.add.text(G.RenderWidth - 80, G.RenderHeight - 80, "0", {
+			this.add.text(G.RenderWidth - 80, G.RenderHeight - 80, G.Names[2], {
 				fontSize: 60,
+				font: G.FontName,
 				fill: '#000000'
 			}),
-			this.add.text(80, G.RenderHeight - 80, "0", {
+			this.add.text(80, G.RenderHeight - 80, G.Names[3], {
 				fontSize: 60,
+				font: G.FontName,
 				fill: '#000000'
-			})]
-		this.scoreText.forEach(s => s.anchor.set(0.5));
+			})
+		];
+		this.nameText.forEach(s => s.anchor.set(0.5));
 
-		this.input.gamepad.start();
+		this.scoreText = [
+			this.add.text(80, 80, "" + G.InitialLives, {
+				fontSize: 60,
+				font: G.FontName,
+				fill: '#000000'
+			}),
+			this.add.text(G.RenderWidth - 80, 80, "" + G.InitialLives, {
+				fontSize: 60,
+				font: G.FontName,
+				fill: '#000000'
+			}),
+			this.add.text(G.RenderWidth - 80, G.RenderHeight - 80 + 50, "" + G.InitialLives, {
+				fontSize: 60,
+				font: G.FontName,
+				fill: '#000000'
+			}),
+			this.add.text(80, G.RenderHeight - 80 + 50, "" + G.InitialLives, {
+				fontSize: 60,
+				font: G.FontName,
+				fill: '#000000'
+			})
+		];
+		this.scoreText.forEach(s => s.anchor.set(0.5));
 
 		this.physics.p2.onBeginContact.removeAll();
 		this.physics.p2.onBeginContact.add((a, b, c, d, e) => {
@@ -188,13 +216,15 @@ export default class GameState extends Phaser.State {
 								let killerIndex = this.players.indexOf(weaponBody.player);
 								let deadIndex = this.players.indexOf(p);
 
-								globalScore[killerIndex]++;
-								this.updateScoreText(killerIndex);
+								remainingLives[deadIndex]--;
+								this.updateLivesText(deadIndex);
 
-								let text = this.add.text(1920 / 2, 80, "Player " + (killerIndex + 1) + " Killed Player " + (deadIndex + 1), {
-									fontSize: 20,
-									fill: '#ff0000'
+								let text = this.add.text(1920 / 2, 80, G.Names[killerIndex] + " killed " + G.Names[deadIndex], {
+									fontSize: 60,
+									font: G.FontName,
+									fill: '#000000'
 								});
+								text.anchor.set(0.5);
 
 								this.add.tween(text)
 									.to({}, TimeToDie * 1.5, undefined, true)
@@ -214,6 +244,25 @@ export default class GameState extends Phaser.State {
 	}
 
 	replacePlayer(index: number) {
+		if (remainingLives[index] <= 0) {
+			//TODO: Gravestone
+			let x = this.players[index].body.x;
+			let y = this.players[index].body.y;
+			this.players[index].destroy();
+			this.players[index] = null;
+
+			let sprite = this.game.add.sprite(x, y, 'grave', undefined, this.backgroundGroup);
+			this.physics.p2.enable(sprite, G.DebugRender || true);
+			let body = <Phaser.Physics.P2.Body>sprite.body;
+			body.clearShapes();
+			body.addCircle(30);
+			body.damping = 0.95;
+			body.fixedRotation = true;
+			sprite.anchor.set(0.5, 0.8);
+
+			return;
+		}
+		
 		let x = this.players[index].body.x;
 		let y = this.players[index].body.y;
 		let oldWeaponType = this.players[index].weaponType;
@@ -229,11 +278,11 @@ export default class GameState extends Phaser.State {
 	}
 
 	update() {
-		this.players.forEach(p => p.update());
+		this.players.forEach(p => {if (p) {p.update()}});
 	}
 
 	preRender() {
-		this.players.forEach(p => p.preRender());
+		this.players.forEach(p => {if (p) {p.preRender()}});
 	}
 
 	drawSplatter(force: number, a, b, e, died: boolean) {
@@ -313,7 +362,7 @@ export default class GameState extends Phaser.State {
 		return { x, y };
 	}
 
-	updateScoreText(index: number) {
-		this.scoreText[index].text = "" + globalScore[index];
+	updateLivesText(index: number) {
+		this.scoreText[index].text = "" + remainingLives[index];
 	}
 }

@@ -16,7 +16,10 @@ export default class LoadingState extends Phaser.State {
 			google: {
 				families: ['Bangers']
 			},
-			active: () => this.fontsLoaded()
+			custom: {
+				families: ['SF Cartoonist Hand']
+			},
+			active: () => this.create(undefined, 'font')
 		})
 
 		this.load.image('mushroom2', require('./assets/images/mushroom2.png'));
@@ -47,6 +50,7 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('blood_2', require('./assets/images/blood_2.png'));
 
 		this.load.image('ah_shit', require('./assets/images/character/ah_shit.svg'));
+		this.load.image('grave', require('./assets/images/character/grave.svg'));
 
 		this.load.image('shadow', require('./assets/images/character/shadow.svg'));
 
@@ -57,28 +61,21 @@ export default class LoadingState extends Phaser.State {
 		this.load.audio('taunt_4', require('./assets/sounds/taunts/right_ill_do_ya_for_that.opus'));
 		this.load.audio('taunt_5', require('./assets/sounds/taunts/tis_but_a_scratch.opus'));
 		this.load.audio('taunt_6', require('./assets/sounds/taunts/well_call_it_a_draw.opus'));
-		
-		
+
+
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);
+		
+		this.input.gamepad.start();
 	}
 
-	create() {
-		console.log('create')
-		if (this.fontLoaded) {
-			this.state.start('game');
-		} else {
-			this.graphicsLoaded = true;
-		}
-	}
-
-	fontLoaded = false;
-	graphicsLoaded = false;
-
-	private fontsLoaded() {
-		console.log('fonts loaded')
-		if (this.graphicsLoaded) {
-			this.state.start('game');
+	loaded = 0;
+	create(game: Phaser.Game, label?: string) {
+		console.log('create', label)
+		this.loaded++;
+		if (this.loaded >= 2) {
+			this.state.start('splashscreen');
+			//this.state.start('game');
 		}
 	}
 }
