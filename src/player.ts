@@ -337,7 +337,7 @@ export class Player {
 					}
 
 
-					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown) {
+					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).justPressed(20)) {
 						this.holdingArrow = false;
 						this.arrowForAim.visible = false;
 						this.arrowForAimBg.visible = false;
