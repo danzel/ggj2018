@@ -336,7 +336,6 @@ export class Player {
 						vel.rotate(0, 0, this.arrowForAim.rotation);
 					}
 
-
 					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).justPressed(20)) {
 						this.holdingArrow = false;
 						this.arrowForAim.visible = false;

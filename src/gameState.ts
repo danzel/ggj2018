@@ -12,6 +12,7 @@ let globalScore = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	scoreText: Phaser.Text[];
 	underBloodGroupForLotsOfBlood: Phaser.Group;
 	middleGroup: Phaser.Group;
 	overBloodGroup: Phaser.Group;
@@ -83,13 +84,24 @@ export default class GameState extends Phaser.State {
 			body.damping = 0.6;
 		}*/
 
-		if (globalScore.some(s => s != 0)) {
-			this.add.text(1920 / 2, 40, globalScore[0] + ", " + globalScore[1] + ", " + globalScore[2] + ", " + globalScore[3], {
-				fontSize: 20,
-				fill: '#ff0000'
-			});
-
-		}
+		this.scoreText = [
+			this.add.text(80, 80, "0", {
+				fontSize: 60,
+				fill: '#000000'
+			}),
+			this.add.text(G.RenderWidth - 80, 80, "0", {
+				fontSize: 60,
+				fill: '#000000'
+			}),
+			this.add.text(G.RenderWidth - 80, G.RenderHeight - 80, "0", {
+				fontSize: 60,
+				fill: '#000000'
+			}),
+			this.add.text(80, G.RenderHeight - 80, "0", {
+				fontSize: 60,
+				fill: '#000000'
+			})]
+		this.scoreText.forEach(s => s.anchor.set(0.5));
 
 		this.input.gamepad.start();
 
@@ -161,6 +173,7 @@ export default class GameState extends Phaser.State {
 								let deadIndex = this.players.indexOf(p);
 
 								globalScore[killerIndex]++;
+								this.updateScoreText(killerIndex);
 
 								let text = this.add.text(1920 / 2, 80, "Player " + (killerIndex + 1) + " Killed Player " + (deadIndex + 1), {
 									fontSize: 20,
@@ -279,5 +292,9 @@ export default class GameState extends Phaser.State {
 		let x = this.game.physics.p2.mpxi(pos[0] + pt[0]);
 		let y = this.game.physics.p2.mpxi(pos[1] + pt[1]);
 		return { x, y };
+	}
+
+	updateScoreText(index: number) {
+		this.scoreText[index].text = "" + globalScore[index];
 	}
 }
