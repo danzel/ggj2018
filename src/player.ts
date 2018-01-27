@@ -84,11 +84,13 @@ export class Player {
 		this.sprite.scale.set(0.5)
 		this.allThingsToDestroy.push(this.sprite);
 		this.game.physics.p2.enable(this.sprite, DebugRender);
+		this.sprite.anchor.y = 0.4;
 
 		this.spriteBg = this.game.add.sprite(x, y, 'NE_border', undefined, this.backgroundGroup);
 		this.spriteBg.scale.set(0.5);
 		this.spriteBg.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.spriteBg);
+		this.spriteBg.anchor.y = 0.4;
 
 		this.body = <Phaser.Physics.P2.Body>this.sprite.body;
 		this.body.clearShapes();
@@ -385,22 +387,23 @@ export class Player {
 
 		if (Math.abs(this.body.velocity.x) > 0.05 && Math.abs(this.body.velocity.y) > 0.05) {
 			if (this.body.velocity.x > 0 && this.body.velocity.y > 0) {
-				this.sprite.loadTexture('SE');
-				this.spriteBg.loadTexture('SE_border');
+				this.setSprite('SE');
 			}
 			if (this.body.velocity.x <= 0 && this.body.velocity.y > 0) {
-				this.sprite.loadTexture('SW');
-				this.spriteBg.loadTexture('SW_border');
+				this.setSprite('SW');
 			}
 			if (this.body.velocity.x <= 0 && this.body.velocity.y <= 0) {
-				this.sprite.loadTexture('NW');
-				this.spriteBg.loadTexture('NW_border');
+				this.setSprite('NW');
 			}
 			if (this.body.velocity.x > 0 && this.body.velocity.y <= 0) {
-				this.sprite.loadTexture('NE');
-				this.spriteBg.loadTexture('NE_border');
+				this.setSprite('NE');
 			}
 		}
+	}
+
+	private setSprite(dir: string) {
+		this.sprite.loadTexture(dir);
+		this.spriteBg.loadTexture(dir + '_border');
 	}
 
 	private copyPasta(dest: Phaser.Sprite, source: Phaser.Sprite) {
