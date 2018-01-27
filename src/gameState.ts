@@ -314,6 +314,24 @@ export default class GameState extends Phaser.State {
 				}
 			}
 		});
+
+		for (var i = 0; i < 20; i++) {
+
+			//Underneath Blood
+			let x = Math.random() * G.RenderWidth;
+			let y = Math.random() * G.RenderHeight;
+			let sprite = this.add.sprite(x, y, 'blood_sheet', (Math.floor(Math.random() * 4)), this.underBloodGroup);
+			sprite.anchor.set(0.5);
+
+			//Angle based on hit angle
+			let angle = Math.random() * 4;
+			sprite.rotation = angle;
+
+			let r = ((128 + Math.random() * 70) | 0) * 0x10000;
+			sprite.tint = r | r >> 8 | r >> 16;
+			sprite.scale.set(0.2 + Math.random());
+			sprite.alpha = 0.4;
+		}
 	}
 
 	replacePlayer(index: number) {
