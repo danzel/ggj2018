@@ -3,6 +3,7 @@ import * as WebFont from 'webfontloader';
 import { Player, TimeToDie } from './player';
 import * as G from './globals';
 import { WeaponType } from './weaponType';
+import { Shuffle } from './shuffle';
 
 
 let globalScore = [
@@ -12,6 +13,8 @@ let globalScore = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	tauntsIndex: number;
+	taunts: string[];
 	scoreText: Phaser.Text[];
 	underBloodGroupForLotsOfBlood: Phaser.Group;
 	middleGroup: Phaser.Group;
@@ -25,6 +28,18 @@ export default class GameState extends Phaser.State {
 	init() {
 		//TODO
 		this.losingPlayer = null;
+
+
+		this.taunts = [
+			'taunt_1',
+			'taunt_2',
+			'taunt_3',
+			'taunt_4',
+			'taunt_5',
+			'taunt_6',
+		]
+		Shuffle(this.taunts);
+		this.tauntsIndex = 0;
 	}
 	losingPlayer: number = null;
 
@@ -66,7 +81,7 @@ export default class GameState extends Phaser.State {
 		//(<any>this.sparkEmitter).blendMode = PIXI.blendModes.DARKEN;
 		this.sparkEmitter.setAlpha(1, 0, 400);
 		this.sparkEmitter.setRotation(0, 360);
-		this.sparkEmitter.setScale(.3,.3,.3,.3)
+		this.sparkEmitter.setScale(.3, .3, .3, .3)
 		this.sparkEmitter.setXSpeed(-400, 400);
 		this.sparkEmitter.setYSpeed(-400, 400);
 
@@ -187,6 +202,9 @@ export default class GameState extends Phaser.State {
 										text.destroy();
 										this.replacePlayer(deadIndex);
 									});
+
+								this.game.add.audio(this.taunts[this.tauntsIndex]).play();
+								this.tauntsIndex = (this.tauntsIndex + 1) % this.taunts.length;
 							}
 						}
 					}

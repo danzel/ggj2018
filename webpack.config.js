@@ -44,6 +44,7 @@ module.exports = {
 			{ test: /\.png$/, loader: 'file-loader?name=[hash].[ext]' },
 			{ test: /\.svg$/, loader: 'file-loader?name=[hash].[ext]' },
 			{ test: /\.m4a$/, loader: 'file-loader?name=[hash].[ext]' },
+			{ test: /\.opus$/, loader: 'file-loader?name=[hash].[ext]' },
 		]
 	},
 	plugins: [

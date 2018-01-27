@@ -47,8 +47,17 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('blood_2', require('./assets/images/blood_2.png'));
 
 		this.load.image('ah_shit', require('./assets/images/character/ah_shit.svg'));
-		
+
 		this.load.image('shadow', require('./assets/images/character/shadow.svg'));
+
+
+		this.load.audio('taunt_1', require('./assets/sounds/taunts/cmon_ya_pansy.opus'));
+		this.load.audio('taunt_2', require('./assets/sounds/taunts/im_invincible.opus'));
+		this.load.audio('taunt_3', require('./assets/sounds/taunts/just_a_flesh_wound.opus'));
+		this.load.audio('taunt_4', require('./assets/sounds/taunts/right_ill_do_ya_for_that.opus'));
+		this.load.audio('taunt_5', require('./assets/sounds/taunts/tis_but_a_scratch.opus'));
+		this.load.audio('taunt_6', require('./assets/sounds/taunts/well_call_it_a_draw.opus'));
+		
 		
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);
