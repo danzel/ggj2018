@@ -61,12 +61,13 @@ export default class LoadingState extends Phaser.State {
 		this.load.audio('taunt_4', require('./assets/sounds/taunts/right_ill_do_ya_for_that.opus'));
 		this.load.audio('taunt_5', require('./assets/sounds/taunts/tis_but_a_scratch.opus'));
 		this.load.audio('taunt_6', require('./assets/sounds/taunts/well_call_it_a_draw.opus'));
-
+/*
 		this.load.image('blood_1', require('./assets/images/blood/blood1.png'));
 		this.load.image('blood_2', require('./assets/images/blood/blood2.png'));
 		this.load.image('blood_3', require('./assets/images/blood/blood3.png'));
 		this.load.image('blood_4', require('./assets/images/blood/blood4.png'));
-		
+*/		
+		this.load.spritesheet('blood_sheet', require('./assets/images/blood/blood_spritesheet.png'), 2048, 2048);
 
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', {
 			font: '16px Arial',

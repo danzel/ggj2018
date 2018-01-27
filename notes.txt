@@ -1,23 +1,37 @@
+blunt force transmission
+========================
+
+get rid of impact font
+
 Knockouts - Fix start/end game to have right players and end when everyone dead
-- end the game
-- Show victor
 - Show victory condition
 
 make sure everyone gets 2 goes at each weapon
 
-blood slowdown - need to move blood sprites out
-aim it by the direction of the weapon
-
 Sounds
 - weapon clash
 - victory
+
+
 
 charge move
 Maybe 4th weapon? (or two lengths of mace)
 
 Drop weapon when die
 
-blunt force transmission
+
+
+Screenshot for Voting sheet
+
+Video
+
+GGJ Site
+- Featured Image (Screenshot for voting sheet)
+- Game Stills
+- Credits
+- Upload connected
+- Play now! link
+
 
 
 Probably won't try
@@ -27,6 +41,7 @@ special blood color when die
 Have size reduce as level progresses
 Turbo for archer?
 Change chain length based on win / lose?
+blood slowdown - need to move blood sprites out
 
 
 Nah 
@@ -58,4 +73,5 @@ Better Sparks when weapons clash
 death:
 - speech bubble
 - lie down
+aim blood by the direction of the weapon
 

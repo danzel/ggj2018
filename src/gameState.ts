@@ -350,7 +350,7 @@ export default class GameState extends Phaser.State {
 		//Underneath Blood
 		let x = ec.x;
 		let y = ec.y;
-		let sprite = this.add.sprite(x, y, 'blood_' + (Math.floor(Math.random() * 4 + 1)), undefined, this.underBloodGroup);
+		let sprite = this.add.sprite(x, y, 'blood_sheet', (Math.floor(Math.random() * 4)), this.underBloodGroup);
 		sprite.anchor.set(0.5);
 
 		//Angle based on hit angle

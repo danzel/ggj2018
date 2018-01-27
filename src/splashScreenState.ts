@@ -7,6 +7,8 @@ export default class SplashScreenState extends Phaser.State {
 	startToPlay: Phaser.Text;
 	create() {
 
+		//Make sure this is in gpu by showing it somewhere
+		let sprite = this.add.sprite(Globals.RenderWidth, Globals.RenderHeight, 'blood_sheet', 1);
 
 		this.padsText = this.add.text(this.world.centerX, this.world.height - 300, 'TODO', {
 			font: '50px ' + Globals.FontName,
