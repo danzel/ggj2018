@@ -23,8 +23,8 @@ export class Player {
 	chains = new Array<Phaser.Sprite>();
 	maceBody: Phaser.Physics.P2.Body;
 
-	arrowForAim: Phaser.Graphics;
-	arrow: Phaser.Graphics;
+	arrowForAim: Phaser.Sprite;
+	arrow: Phaser.Sprite;
 
 	sword: Phaser.Sprite;
 
@@ -154,7 +154,7 @@ export class Player {
 	}
 
 	private createSword() {
-		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6);
+		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6, 'axe');
 		this.allThingsToDestroy.push(this.sword);
 		this.game.physics.p2.enable(this.sword, DebugRender);
 		let body = <Phaser.Physics.P2.Body>this.sword.body;
@@ -173,19 +173,14 @@ export class Player {
 	}
 
 	private createArrowAim() {
-		this.arrowForAim = this.game.add.graphics(this.body.x, this.body.y);
+		this.arrowForAim = this.game.add.sprite(this.body.x, this.body.y, 'bow');
+		this.arrowForAim.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.arrowForAim);
-
-		this.arrowForAim.beginFill(0xffffff)
-		this.arrowForAim.drawTriangle([new Phaser.Point(0, -arrowLength / 2), new Phaser.Point(arrowWidth / 2, arrowLength / 2), new Phaser.Point(-arrowWidth / 2, arrowLength / 2)]);
-		this.arrowForAim.endFill();
 	}
 
 	private createArrow(rotation: number) {
-		this.arrow = this.game.add.graphics(this.body.x, this.body.y);
-		this.arrow.beginFill(0x0000ff)
-		this.arrow.drawTriangle([new Phaser.Point(0, -arrowLength / 2), new Phaser.Point(arrowWidth / 2, arrowLength / 2), new Phaser.Point(-arrowWidth / 2, arrowLength / 2)]);
-		this.arrow.endFill();
+		this.arrow = this.game.add.sprite(this.body.x, this.body.y, 'arrow');
+		this.arrow.scale.set(0.5);
 
 		this.game.physics.p2.enable(this.arrow, DebugRender);
 		let body = <Phaser.Physics.P2.Body>this.arrow.body;
@@ -317,7 +312,7 @@ export class Player {
 					if (mag > 0.5) {
 						vel.normalize();
 						rotation = vel.angle(new Phaser.Point());
-						this.arrowForAim.rotation = rotation - Math.PI / 2;
+						this.arrowForAim.rotation = rotation;// - Math.PI / 2;
 					} else {
 						vel = new Phaser.Point(0, 1);
 						vel.rotate(0, 0, this.arrowForAim.rotation);
