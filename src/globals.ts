@@ -12,4 +12,4 @@ export const Names = [
 	'sin',
 ];
 
-export const InitialLives = 1;
+export const InitialLives = 6;

@@ -256,9 +256,29 @@ export default class GameState extends Phaser.State {
 			let body = <Phaser.Physics.P2.Body>sprite.body;
 			body.clearShapes();
 			body.addCircle(30);
-			body.damping = 0.95;
+			body.damping = 0.99;
 			body.fixedRotation = true;
 			sprite.anchor.set(0.5, 0.8);
+
+			let aliveAmount = remainingLives.filter(a => a > 0).length;
+
+			if (aliveAmount == 0) {
+				let text  = this.game.add.text(G.RenderWidth / 2, G.RenderHeight / 2, "it's a draw!", {
+					font: G.FontName,
+					fontSize: 100,
+					fill: '#000000'
+				});
+				text.anchor.set(0.5);
+			} else if (aliveAmount == 1) {
+				let winnerIndex = remainingLives.findIndex(a => a > 0);
+
+				let text  = this.game.add.text(G.RenderWidth / 2, G.RenderHeight / 2, G.Names[winnerIndex] + " wins!", {
+					font: G.FontName,
+					fontSize: 100,
+					fill: '#000000'
+				});
+				text.anchor.set(0.5);
+			}
 
 			return;
 		}
