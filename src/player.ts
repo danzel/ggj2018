@@ -28,6 +28,10 @@ export class Player {
 
 	sword: Phaser.Sprite;
 
+	arrowForAimBg: Phaser.Sprite;
+	arrowBg: Phaser.Sprite;
+	swordBg: Phaser.Sprite;
+
 	turboAmount = MaxTurboTimeSeconds;
 	turboBar: Phaser.Graphics;
 
@@ -37,7 +41,7 @@ export class Player {
 	allThingsToDestroy = new Array<{ destroy: Function }>();
 	constraints = new Array<any>();
 
-	constructor(private game: Phaser.Game, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType) {
+	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType) {
 		pad.deadZone = 0;
 
 		this.createBody(startX, startY);
@@ -68,6 +72,7 @@ export class Player {
 		if (this.arrow != null) {
 			this.arrow.destroy();
 		}
+		if (this.arrowBg) {this.arrowBg.destroy()}
 	}
 
 	private createBody(x: number, y: number) {
@@ -79,6 +84,7 @@ export class Player {
 		this.body.clearShapes();
 		this.body.addCircle(bodyRadius);
 
+		this.body.fixedRotation = true;
 		this.body.angularDamping = 1;
 		this.body.damping = .999;
 		this.body.collideWorldBounds = true;
@@ -106,7 +112,7 @@ export class Player {
 		let lastBodySize = bodyRadius;
 		for (let i = 0; i < chainLength; i++) {
 			let chainLink = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius, 'chain');
-			chainLink.scale.set(0.2);
+			chainLink.scale.set(0.15);
 			this.chains.push(chainLink);
 			this.allThingsToDestroy.push(chainLink);
 			this.game.physics.p2.enable(chainLink, DebugRender);
@@ -155,7 +161,11 @@ export class Player {
 
 	private createSword() {
 		this.sword = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6, 'axe');
+		this.swordBg = this.game.add.sprite(this.body.x, this.body.y - bodyRadius - swordLength * 0.6, 'axe_border', undefined, this.backgroundGroup);
+		this.swordBg.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.sword);
+		this.allThingsToDestroy.push(this.swordBg);
+		
 		this.game.physics.p2.enable(this.sword, DebugRender);
 		let body = <Phaser.Physics.P2.Body>this.sword.body;
 
@@ -176,11 +186,19 @@ export class Player {
 		this.arrowForAim = this.game.add.sprite(this.body.x, this.body.y, 'bow');
 		this.arrowForAim.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.arrowForAim);
+
+		this.arrowForAimBg = this.game.add.sprite(this.body.x, this.body.y, 'bow_border', undefined, this.backgroundGroup);
+		this.arrowForAimBg.anchor.set(0.5);
+		this.allThingsToDestroy.push(this.arrowForAimBg);
 	}
 
 	private createArrow(rotation: number) {
 		this.arrow = this.game.add.sprite(this.body.x, this.body.y, 'arrow');
-		this.arrow.scale.set(0.5);
+		this.arrow.scale.set(0.8);
+
+		this.arrowBg = this.game.add.sprite(this.body.x, this.body.y, 'arrow_border', undefined, this.backgroundGroup);
+		this.arrowBg.scale.set(0.8);
+		this.arrowBg.anchor.set(0.5);
 
 		this.game.physics.p2.enable(this.arrow, DebugRender);
 		let body = <Phaser.Physics.P2.Body>this.arrow.body;
@@ -213,11 +231,14 @@ export class Player {
 	returnArrow() {
 		//this.game.physics.p2.addConstraint(this.spearConstraint);
 		this.arrowForAim.visible = true;
+		this.arrowForAimBg.visible = true;
 		this.holdingArrow = true;
 
 		//Destroy the arrow
 		this.arrow.destroy();
 		this.arrow = null;
+		this.arrowBg.destroy();
+		this.arrowBg = null;
 	}
 
 	private updateTurboBar() {
@@ -322,6 +343,7 @@ export class Player {
 					if (this.pad.getButton(Phaser.Gamepad.XBOX360_RIGHT_BUMPER).isDown) {
 						this.holdingArrow = false;
 						this.arrowForAim.visible = false;
+						this.arrowForAimBg.visible = false;
 
 						this.createArrow(rotation);
 					}
@@ -330,7 +352,9 @@ export class Player {
 
 			this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
 		}
+	}
 
+	preRender() {
 		let last = this.body;
 		for (var i = 0; i < this.chains.length; i++) {
 			let now = this.chains[i];
@@ -346,6 +370,28 @@ export class Player {
 
 		this.updateTurboBar();
 		this.updateHealthBar();
+
+
+		//Update backgrounds
+		if (this.sword) {
+			//debugger;
+			this.swordBg.x = this.sword.x;
+			this.swordBg.y = this.sword.y;
+			this.swordBg.rotation = this.sword.rotation;
+			this.swordBg.updateTransform();
+		}
+		if (this.arrowForAim) {
+			this.arrowForAimBg.x = this.arrowForAim.x;
+			this.arrowForAimBg.y = this.arrowForAim.y;
+			this.arrowForAimBg.rotation = this.arrowForAim.rotation;
+			this.arrowForAimBg.updateTransform();
+		}
+		if (this.arrow) {
+			this.arrowBg.x = this.arrow.x;
+			this.arrowBg.y = this.arrow.y;
+			this.arrowBg.rotation = this.arrow.rotation;
+			this.arrowBg.updateTransform();
+		}
 	}
 
 	holdingArrow = true;

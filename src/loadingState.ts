@@ -29,11 +29,30 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('chain', require('./assets/images/chain.svg'));
 		this.load.image('mace', require('./assets/images/mace.svg'));
 
+		this.load.image('arrow_border', require('./assets/images/arrow_border.svg'));
+		this.load.image('axe_border', require('./assets/images/axe_border.svg'));
+		this.load.image('bow_border', require('./assets/images/bow_border.svg'));
+
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);
 	}
 
+	create() {
+		console.log('create')
+		if (this.fontLoaded) {
+			this.state.start('game');
+		} else {
+			this.graphicsLoaded = true;
+		}
+	}
+
+	fontLoaded = false;
+	graphicsLoaded = false;
+
 	private fontsLoaded() {
-		this.state.start('game');
+		console.log('fonts loaded')
+		if (this.graphicsLoaded) {
+			this.state.start('game');
+		}
 	}
 }

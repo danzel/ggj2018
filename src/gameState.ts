@@ -12,6 +12,7 @@ let globalScore = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	backgroundGroup: Phaser.Group;
 	splatter: Phaser.Graphics;
 	players: Player[];
 	init() {
@@ -44,11 +45,13 @@ export default class GameState extends Phaser.State {
 		//this.physics.p2.applyGravity = true;
 		this.physics.p2.restitution = 0.4;
 
+		this.backgroundGroup = this.game.add.group();
+
 		this.players = [
-			new Player(this.game, this.game.input.gamepad.pad1, 200, 200, WeaponType.Sword),
-			new Player(this.game, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Arrow),
-			new Player(this.game, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, WeaponType.Chain),
-			new Player(this.game, this.game.input.gamepad.pad4, 40, 720 - 40, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad1, 200, 200, WeaponType.Sword),
+			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, WeaponType.Arrow),
+			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, WeaponType.Chain),
+			new Player(this.game, this.backgroundGroup, this.game.input.gamepad.pad4, 40, 720 - 40, WeaponType.Chain),
 		];
 
 		let sprite = this.game.add.sprite(G.RenderWidth / 2, G.RenderHeight / 2);
@@ -173,11 +176,15 @@ export default class GameState extends Phaser.State {
 			weaponType ++;
 		}
 
-		this.players[index] = new Player(this.game, this.players[index].pad, x, y, weaponType)
+		this.players[index] = new Player(this.game, this.backgroundGroup, this.players[index].pad, x, y, weaponType)
 	}
 
 	update() {
 		this.players.forEach(p => p.update());
+	}
+
+	preRender(){
+		this.players.forEach(p => p.preRender());
 	}
 
 	drawSplatter(force: number, a, b, e, died: boolean) {
