@@ -1,8 +1,6 @@
 blunt force transmission
 ========================
 
-get rid of impact font
-
 Knockouts - Fix start/end game to have right players and end when everyone dead
 - Show victory condition
 
@@ -74,4 +72,4 @@ death:
 - speech bubble
 - lie down
 aim blood by the direction of the weapon
-
+get rid of impact font

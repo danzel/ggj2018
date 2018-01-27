@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser-ce';
 import { DebugRender } from './globals';
+import * as G from './globals';
 import { WeaponType } from './weaponType';
 
 export const MaxTurboTimeSeconds = 3;
@@ -291,8 +292,8 @@ export class Player {
 		}
 
 		let text = this.game.add.text(this.body.x, this.body.y, "" + damage, {
-			fontSize: 50 + damage,
-			font: 'impact',
+			fontSize: 40 + damage,
+			font: G.FontName,
 			fill: '#000000'
 		});
 		text.anchor.set(0.5);
