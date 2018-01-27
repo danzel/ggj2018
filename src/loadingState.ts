@@ -5,7 +5,7 @@ declare function require(url: string): string;
 
 export default class LoadingState extends Phaser.State {
 	init() {
-		this.game.stage.backgroundColor = '#ffffff';
+		this.game.stage.backgroundColor = '#eeeeee';
 		this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.stage.disableVisibilityChange = true;
@@ -32,6 +32,8 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('arrow_border', require('./assets/images/arrow_border.svg'));
 		this.load.image('axe_border', require('./assets/images/axe_border.svg'));
 		this.load.image('bow_border', require('./assets/images/bow_border.svg'));
+		this.load.image('chain_border', require('./assets/images/chain_border.svg'));
+		this.load.image('mace_border', require('./assets/images/mace_border.svg'));
 
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);

@@ -21,6 +21,7 @@ export class Player {
 	sprite: Phaser.Sprite;
 
 	chains = new Array<Phaser.Sprite>();
+	mace: Phaser.Sprite;
 	maceBody: Phaser.Physics.P2.Body;
 
 	arrowForAim: Phaser.Sprite;
@@ -31,6 +32,8 @@ export class Player {
 	arrowForAimBg: Phaser.Sprite;
 	arrowBg: Phaser.Sprite;
 	swordBg: Phaser.Sprite;
+	maceBg: Phaser.Sprite;
+	chainBgs = new Array<Phaser.Sprite>();
 
 	turboAmount = MaxTurboTimeSeconds;
 	turboBar: Phaser.Graphics;
@@ -115,6 +118,13 @@ export class Player {
 			chainLink.scale.set(0.15);
 			this.chains.push(chainLink);
 			this.allThingsToDestroy.push(chainLink);
+
+			let chainBg = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize + chainRadius, 'chain_border', undefined, this.backgroundGroup);
+			chainBg.scale.set(0.15);
+			this.chainBgs.push(chainBg);
+			this.allThingsToDestroy.push(chainBg);
+			chainBg.anchor.set(0.5);
+
 			this.game.physics.p2.enable(chainLink, DebugRender);
 			let chainBody = <Phaser.Physics.P2.Body>chainLink.body;
 			chainBody.clearShapes();
@@ -142,11 +152,17 @@ export class Player {
 
 		//game.physics.p2.createSpring(this.body, lastBody, dist, 4);
 
-		let mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace');
-		mace.scale.set(0.4);
-		this.allThingsToDestroy.push(mace);
-		this.game.physics.p2.enable(mace, DebugRender);
-		this.maceBody = <Phaser.Physics.P2.Body>mace.body;
+		this.mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace');
+		this.mace.scale.set(0.4);
+		this.allThingsToDestroy.push(this.mace);
+		
+		this.maceBg = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace_border', undefined, this.backgroundGroup);
+		this.allThingsToDestroy.push(this.maceBg);
+		this.maceBg.scale.set(0.4);
+		this.maceBg.anchor.set(0.5);
+
+		this.game.physics.p2.enable(this.mace, DebugRender);
+		this.maceBody = <Phaser.Physics.P2.Body>this.mace.body;
 		this.maceBody.clearShapes();
 		this.maceBody.addCircle(maceRadius);
 		this.maceBody.mass *= 0.5;
@@ -374,25 +390,28 @@ export class Player {
 
 		//Update backgrounds
 		if (this.sword) {
-			//debugger;
-			this.swordBg.x = this.sword.x;
-			this.swordBg.y = this.sword.y;
-			this.swordBg.rotation = this.sword.rotation;
-			this.swordBg.updateTransform();
+			this.copyPasta(this.swordBg, this.sword);
 		}
 		if (this.arrowForAim) {
-			this.arrowForAimBg.x = this.arrowForAim.x;
-			this.arrowForAimBg.y = this.arrowForAim.y;
-			this.arrowForAimBg.rotation = this.arrowForAim.rotation;
-			this.arrowForAimBg.updateTransform();
+			this.copyPasta(this.arrowForAimBg, this.arrowForAim);
 		}
 		if (this.arrow) {
-			this.arrowBg.x = this.arrow.x;
-			this.arrowBg.y = this.arrow.y;
-			this.arrowBg.rotation = this.arrow.rotation;
-			this.arrowBg.updateTransform();
+			this.copyPasta(this.arrowBg, this.arrow);
+		}
+		if (this.mace) {
+			this.copyPasta(this.maceBg, this.mace);
+		}
+		for (let i = 0; i < this.chains.length; i++) {
+			this.copyPasta(this.chainBgs[i],this.chains[i]);
 		}
 	}
+
+	private copyPasta(dest: Phaser.Sprite, source: Phaser.Sprite) {
+		dest.x = source.x;
+		dest.y = source.y;
+		dest.rotation = source.rotation;
+		dest.updateTransform();
+}
 
 	holdingArrow = true;
 }
