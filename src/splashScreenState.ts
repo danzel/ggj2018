@@ -45,15 +45,15 @@ export default class SplashScreenState extends Phaser.State {
 		});*/
 		//titleText.anchor.set(0.5, 0.5);
 
-		this.padsText = this.add.text(this.world.centerX, this.world.height - 200, 'TODO', {
-			font: '80px ' + G.FontName,
+		this.padsText = this.add.text(this.world.centerX, this.world.height - 120, 'TODO', {
+			font: '60px ' + G.FontName,
 			fill: '#000000',
 			align: 'center'
 		});
 		this.padsText.anchor.setTo(0.5, 0.5);
 
-		this.startToPlay = this.add.text(this.world.centerX, this.world.height - 100, 'Press Start to Play', {
-			font: '80px ' + G.FontName,
+		this.startToPlay = this.add.text(this.world.centerX, this.world.height - 60, 'Press Start to Play', {
+			font: '60px ' + G.FontName,
 			fill: '#000000',
 			align: 'center'
 		});
@@ -73,22 +73,30 @@ export default class SplashScreenState extends Phaser.State {
 		})
 
 		let rightText = 1100;
-		this.add.text(rightText, 500, "Bow", {
+		this.add.text(rightText, 500 - 40, "Bow", {
 			font: '70px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(rightText, 580, "Move with Left Stick", {
+		this.add.text(rightText, 580 - 40, "Move with Left Stick", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(rightText, 640, "Aim with Right Stick", {
+		this.add.text(rightText, 640 - 40, "Aim with Right Stick", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
-		this.add.text(rightText, 700, "(L/R) Fire", {
+		this.add.text(rightText, 700 - 40, "(L/R) Fire", {
 			font: '60px ' + G.FontName,
 			fill: '#000000',
 		})
+
+		let goal = this.add.text(G.RenderWidth / 2, 800, "You have 6 lives. Last Player alive wins", {
+			font: '80px ' + G.FontName,
+			fill: '#000000',
+			align: 'center'
+		})
+		goal.anchor.set(0.5);
+
 
 
 		this.players = [
