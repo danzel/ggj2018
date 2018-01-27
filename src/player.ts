@@ -213,7 +213,6 @@ export class Player {
 
 		let vel = new Phaser.Point(0, -arrowSpeed);
 		vel.rotate(0, 0, rotation + Math.PI / 2);
-		console.log(vel.x, vel.y);
 		body.applyImpulseLocal([vel.x, vel.y], 0, 0);
 
 		body.rotation = rotation - Math.PI / 2;
