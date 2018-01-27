@@ -12,6 +12,7 @@ let globalScore = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	underBloodGroupForLotsOfBlood: Phaser.Group;
 	middleGroup: Phaser.Group;
 	overBloodGroup: Phaser.Group;
 	splatter: Phaser.Graphics;
@@ -43,8 +44,9 @@ export default class GameState extends Phaser.State {
 		this.physics.p2.setImpactEvents(true);
 
 		this.physics.p2.restitution = 0.4;
+		this.underBloodGroupForLotsOfBlood = this.game.add.group();
 
-		this.underBloodGroup = this.game.add.group();
+		this.underBloodGroup = this.game.add.group(this.underBloodGroupForLotsOfBlood);
 
 		this.backgroundGroup = this.game.add.group();
 		this.middleGroup = this.game.add.group();
@@ -248,7 +250,15 @@ export default class GameState extends Phaser.State {
 				.to({ alpha: 0 }, bloodTime, Phaser.Easing.Cubic.Out, true)
 			this.game.add.tween(sprite)
 				.to({ x: ec.x + xMod * 3, y: ec.y + yMod * 3 }, bloodTime, Phaser.Easing.Cubic.In, true)
-				.onComplete.add(() => sprite.destroy());
+				.onComplete.add(() => {
+					sprite.destroy();
+
+					if (this.underBloodGroup.children.length > 500) {
+						//console.log("CACHING THE THING TO DO IT FAST");
+						this.underBloodGroup.cacheAsBitmap = true;
+						this.underBloodGroup = this.game.add.group(this.underBloodGroupForLotsOfBlood);
+					}
+				});
 
 
 
