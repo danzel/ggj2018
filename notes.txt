@@ -1,16 +1,6 @@
 blunt force transmission
 ========================
 
-Splash screen
-- Game Name
-- Splatters of blood.
-- Players spinning in corners (????)
-- Show victory condition
-
-
-
-Screenshot for Voting sheet
-
 Video
 - Splash (With us spinning the players)
 - Clip of each weapon shooting the target dummy
@@ -19,6 +9,7 @@ Video
   - Arrow
 - Gameplay
 
+Screenshot for Voting sheet
 
 GGJ Site
 - Featured Image (Screenshot for voting sheet)
