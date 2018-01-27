@@ -16,9 +16,12 @@ const arrowSpeed = 80;
 const swordLength = 120;
 const swordWidth = 40;
 
+const shadowOffset = 44;
+
 export class Player {
 	body: Phaser.Physics.P2.Body;
 	sprite: Phaser.Sprite;
+	shadow: Phaser.Sprite;
 
 	chains = new Array<Phaser.Sprite>();
 	mace: Phaser.Sprite;
@@ -85,6 +88,12 @@ export class Player {
 		this.allThingsToDestroy.push(this.sprite);
 		this.game.physics.p2.enable(this.sprite, DebugRender);
 		this.sprite.anchor.y = 0.4;
+
+		this.shadow = this.game.add.sprite(x, y + shadowOffset, 'shadow', undefined, this.backgroundGroup);
+		this.allThingsToDestroy.push(this.shadow);
+		this.shadow.anchor.set(0.5);
+		this.shadow.scale.set(0.4)
+
 
 		this.spriteBg = this.game.add.sprite(x, y, 'NE_border', undefined, this.backgroundGroup);
 		this.spriteBg.scale.set(0.5);
@@ -368,6 +377,9 @@ export class Player {
 
 		//Update backgrounds
 		this.copyPasta(this.spriteBg, this.sprite);
+		this.shadow.x = this.sprite.x;
+		this.shadow.y = this.sprite.y + shadowOffset;
+
 		if (this.sword) {
 			this.copyPasta(this.swordBg, this.sword);
 		}

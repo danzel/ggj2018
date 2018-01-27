@@ -5,8 +5,6 @@ Knockouts - Fix start/end game to have right players and end when everyone dead
 
 speech bubble to show death
 
-shadows for characters?
-
 Better Sparks when weapons clash
 
 charge move
@@ -50,3 +48,5 @@ Directly connected weapon (Sword)
 hit blood
 try different blood splatters
 Arrow require button press
+shadows for characters?
+
