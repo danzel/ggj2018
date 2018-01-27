@@ -33,6 +33,16 @@ export default class LoadingState extends Phaser.State {
 		this.load.image('chain_border', require('./assets/images/chain_border.svg'));
 		this.load.image('mace_border', require('./assets/images/mace_border.svg'));
 
+		this.load.image('NE', require('./assets/images/character/NE.svg'));
+		this.load.image('SE', require('./assets/images/character/SE.svg'));
+		this.load.image('NW', require('./assets/images/character/NW.svg'));
+		this.load.image('SW', require('./assets/images/character/SW.svg'));
+		
+		this.load.image('NE_border', require('./assets/images/character/NE_border.svg'));
+		this.load.image('SE_border', require('./assets/images/character/SE_border.svg'));
+		this.load.image('NW_border', require('./assets/images/character/NW_border.svg'));
+		this.load.image('SW_border', require('./assets/images/character/SW_border.svg'));
+		
 		let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
 		text.anchor.setTo(0.5, 0.5);
 	}

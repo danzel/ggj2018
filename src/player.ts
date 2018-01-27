@@ -29,6 +29,7 @@ export class Player {
 
 	sword: Phaser.Sprite;
 
+	spriteBg: Phaser.Sprite;
 	arrowForAimBg: Phaser.Sprite;
 	arrowBg: Phaser.Sprite;
 	swordBg: Phaser.Sprite;
@@ -75,13 +76,19 @@ export class Player {
 		if (this.arrow != null) {
 			this.arrow.destroy();
 		}
-		if (this.arrowBg) {this.arrowBg.destroy()}
+		if (this.arrowBg) { this.arrowBg.destroy() }
 	}
 
 	private createBody(x: number, y: number) {
-		this.sprite = this.game.add.sprite(x, y, 'mushroom2');
+		this.sprite = this.game.add.sprite(x, y, 'NE');
+		this.sprite.scale.set(0.5)
 		this.allThingsToDestroy.push(this.sprite);
 		this.game.physics.p2.enable(this.sprite, DebugRender);
+
+		this.spriteBg = this.game.add.sprite(x, y, 'NE_border', undefined, this.backgroundGroup);
+		this.spriteBg.scale.set(0.5);
+		this.spriteBg.anchor.set(0.5);
+		this.allThingsToDestroy.push(this.spriteBg);
 
 		this.body = <Phaser.Physics.P2.Body>this.sprite.body;
 		this.body.clearShapes();
@@ -137,7 +144,7 @@ export class Player {
 		this.mace = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace');
 		this.mace.scale.set(0.4);
 		this.allThingsToDestroy.push(this.mace);
-		
+
 		this.maceBg = this.game.add.sprite(lastBody.x, lastBody.y + lastBodySize, 'mace_border', undefined, this.backgroundGroup);
 		this.allThingsToDestroy.push(this.maceBg);
 		this.maceBg.scale.set(0.4);
@@ -163,7 +170,7 @@ export class Player {
 		this.swordBg.anchor.set(0.5);
 		this.allThingsToDestroy.push(this.sword);
 		this.allThingsToDestroy.push(this.swordBg);
-		
+
 		this.game.physics.p2.enable(this.sword, DebugRender);
 		let body = <Phaser.Physics.P2.Body>this.sword.body;
 
@@ -359,6 +366,7 @@ export class Player {
 
 
 		//Update backgrounds
+		this.copyPasta(this.spriteBg, this.sprite);
 		if (this.sword) {
 			this.copyPasta(this.swordBg, this.sword);
 		}
@@ -372,7 +380,26 @@ export class Player {
 			this.copyPasta(this.maceBg, this.mace);
 		}
 		for (let i = 0; i < this.chains.length; i++) {
-			this.copyPasta(this.chainBgs[i],this.chains[i]);
+			this.copyPasta(this.chainBgs[i], this.chains[i]);
+		}
+
+		if (Math.abs(this.body.velocity.x) > 0.05 && Math.abs(this.body.velocity.y) > 0.05) {
+			if (this.body.velocity.x > 0 && this.body.velocity.y > 0) {
+				this.sprite.loadTexture('SE');
+				this.spriteBg.loadTexture('SE_border');
+			}
+			if (this.body.velocity.x <= 0 && this.body.velocity.y > 0) {
+				this.sprite.loadTexture('SW');
+				this.spriteBg.loadTexture('SW_border');
+			}
+			if (this.body.velocity.x <= 0 && this.body.velocity.y <= 0) {
+				this.sprite.loadTexture('NW');
+				this.spriteBg.loadTexture('NW_border');
+			}
+			if (this.body.velocity.x > 0 && this.body.velocity.y <= 0) {
+				this.sprite.loadTexture('NE');
+				this.spriteBg.loadTexture('NE_border');
+			}
 		}
 	}
 
@@ -381,7 +408,7 @@ export class Player {
 		dest.y = source.y;
 		dest.rotation = source.rotation;
 		dest.updateTransform();
-}
+	}
 
 	holdingArrow = true;
 }

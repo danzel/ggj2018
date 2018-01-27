@@ -1,13 +1,20 @@
+try different blood splatters
+
+Sparks when weapons clash
 
 Knockouts - Fix start/end game to have right players and end when everyone dead
+- player names
 - Show score
 - Show victor
 - Show victory condition
 
 charge move
 
-Maybe 4th weapon? (or two lengths of mace) spear
+Maybe 4th weapon? (or two lengths of mace)
 
+Sounds
+
+Drop weapon when die
 
 Probably won't try
 ====================
@@ -22,6 +29,7 @@ Nah
 ======================
 player heavier so they can move while swinging
 Throwing chain
+spear sucked
 
 
 Impossible
