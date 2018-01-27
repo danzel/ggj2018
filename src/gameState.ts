@@ -13,6 +13,12 @@ let remainingLives = [
 const ImpactDamageMultiplier = 0.7;
 
 export default class GameState extends Phaser.State {
+	bowHitIndex: number;
+	bowHits: string[];
+	playerHitIndex: number;
+	playerHits: string[];
+	weaponClashIndex: number;
+	weaponClashes: string[];
 	nameText: Phaser.Text[];
 	tauntsIndex: number;
 	taunts: string[];
@@ -41,6 +47,41 @@ export default class GameState extends Phaser.State {
 		]
 		Shuffle(this.taunts);
 		this.tauntsIndex = 0;
+
+		this.weaponClashes = [
+			'steel_hit_1',
+			'steel_hit_2',
+			'steel_hit_3',
+			'steel_hit_4',
+			'steel_hit_5',
+		];
+		Shuffle(this.weaponClashes);
+		this.weaponClashIndex = 0;
+
+		this.playerHits = [
+			'player_hit_1',
+			'player_hit_2',
+			'player_hit_3',
+			'player_hit_4',
+			'player_hit_5',
+			'player_hit_6',
+			'player_hit_7',
+		];
+		Shuffle(this.playerHits);
+		this.playerHitIndex = 0;
+
+		
+		this.bowHits = [
+			'bow_hit_1',
+			'bow_hit_2',
+			'bow_hit_3',
+			'bow_hit_4',
+			'bow_hit_5',
+			'bow_hit_6',
+			'bow_hit_7',
+		];
+		Shuffle(this.bowHits);
+		this.bowHitIndex = 0;
 	}
 	losingPlayer: number = null;
 
@@ -167,13 +208,21 @@ export default class GameState extends Phaser.State {
 						a.player.returnArrow();
 						return;
 					}
+
+					if (!b.isWeapon && !b.isPlayer && !b.isChain) {
+						this.game.add.audio(this.bowHits[this.bowHitIndex]).play(undefined, undefined, 0.5);
+						this.bowHitIndex = (this.bowHitIndex + 1) % this.bowHits.length;
+					}
 				}
 
-				if (a.isWeapon && b.isWeapon) {
+				if (a.isWeapon && b.isWeapon && e[0].firstImpact) {
 					let ec = this.getCollisionCenter(e);
 					this.sparkEmitter.x = ec.x;
 					this.sparkEmitter.y = ec.y;
 					this.sparkEmitter.start(true, 400, null, 10);
+
+					this.game.add.audio(this.weaponClashes[this.weaponClashIndex]).play();
+					this.weaponClashIndex = (this.weaponClashIndex + 1) % this.weaponClashes.length;
 				}
 
 
@@ -235,6 +284,9 @@ export default class GameState extends Phaser.State {
 
 								this.game.add.audio(this.taunts[this.tauntsIndex]).play();
 								this.tauntsIndex = (this.tauntsIndex + 1) % this.taunts.length;
+							} else {
+								this.game.add.audio(this.playerHits[this.playerHitIndex]).play();
+								this.playerHitIndex = (this.playerHitIndex + 1) % this.playerHits.length;
 							}
 						}
 					}
@@ -263,7 +315,7 @@ export default class GameState extends Phaser.State {
 			let aliveAmount = remainingLives.filter(a => a > 0).length;
 
 			if (aliveAmount == 0) {
-				let text  = this.game.add.text(G.RenderWidth / 2, G.RenderHeight / 2, "it's a draw!", {
+				let text = this.game.add.text(G.RenderWidth / 2, G.RenderHeight / 2, "it's a draw!", {
 					font: G.FontName,
 					fontSize: 100,
 					fill: '#000000'
@@ -272,17 +324,19 @@ export default class GameState extends Phaser.State {
 			} else if (aliveAmount == 1) {
 				let winnerIndex = remainingLives.findIndex(a => a > 0);
 
-				let text  = this.game.add.text(G.RenderWidth / 2, G.RenderHeight / 2, G.Names[winnerIndex] + " wins!", {
+				let text = this.game.add.text(G.RenderWidth / 2, G.RenderHeight / 2, G.Names[winnerIndex] + " wins!", {
 					font: G.FontName,
 					fontSize: 100,
 					fill: '#000000'
 				});
 				text.anchor.set(0.5);
+
+				this.add.audio('victory').play();
 			}
 
 			return;
 		}
-		
+
 		let x = this.players[index].body.x;
 		let y = this.players[index].body.y;
 		let oldWeaponType = this.players[index].weaponType;
@@ -298,20 +352,19 @@ export default class GameState extends Phaser.State {
 	}
 
 	update() {
-		this.players.forEach(p => {if (p) {p.update()}});
+		this.players.forEach(p => { if (p) { p.update() } });
 	}
 
 	preRender() {
-		this.players.forEach(p => {if (p) {p.preRender()}});
+		this.players.forEach(p => { if (p) { p.preRender() } });
 	}
 
 	drawSplatter(force: number, a, b, e, died: boolean) {
-
 		let ec = this.getCollisionCenter(e);
 		let targetScale = (10 + force) / 32;
 
 		const bloodTime = 300;
-		
+
 		var spread = 10 + force * 2;
 		let amount = Math.min(10, 3 + force);
 		for (let i = 0; i < amount; i++) {
@@ -357,7 +410,7 @@ export default class GameState extends Phaser.State {
 		let anglePoint = new Phaser.Point(a.position[0], a.position[1]);
 		let angle = anglePoint.angle(new Phaser.Point(b.position[0], b.position[1]));
 
-		angle -= Math.PI /2;
+		angle -= Math.PI / 2;
 		//One of these is the weapon and one the player, reverse then
 		if (a.isPlayer) {
 			angle = angle + Math.PI;
@@ -369,7 +422,7 @@ export default class GameState extends Phaser.State {
 		targetScale = (0.3 + (3 * force / 100)) / scaleScale;
 
 		const bloodTime2 = 200;
-		
+
 		let r = ((128 + Math.random() * 70) | 0) * 0x10000;
 		sprite.tint = r;
 		sprite.scale.set(0.3 / scaleScale);

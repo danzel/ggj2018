@@ -6,19 +6,6 @@ Knockouts - Fix start/end game to have right players and end when everyone dead
 
 make sure everyone gets 2 goes at each weapon
 
-Sounds
-- weapon clash
-- victory
-
-
-
-charge move
-Maybe 4th weapon? (or two lengths of mace)
-
-Drop weapon when die
-
-
-
 Screenshot for Voting sheet
 
 Video
@@ -31,7 +18,6 @@ GGJ Site
 - Play now! link
 
 
-
 Probably won't try
 ====================
 change blood color based on health
@@ -40,6 +26,9 @@ Have size reduce as level progresses
 Turbo for archer?
 Change chain length based on win / lose?
 blood slowdown - need to move blood sprites out
+charge move
+Maybe 4th weapon? (or two lengths of mace)
+Drop weapon when die
 
 
 Nah 
@@ -73,3 +62,6 @@ death:
 - lie down
 aim blood by the direction of the weapon
 get rid of impact font
+Sounds
+- weapon clash
+- victory

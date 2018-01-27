@@ -146,6 +146,7 @@ export class Player {
 
 			this.game.physics.p2.enable(chainLink, DebugRender);
 			let chainBody = <Phaser.Physics.P2.Body>chainLink.body;
+			(<any>chainBody.data).isChain = true;
 			chainBody.clearShapes();
 			chainBody.addCircle(chainRadius * 2);
 			chainBody.mass *= 0.1;
@@ -240,6 +241,8 @@ export class Player {
 		body.applyImpulseLocal([vel.x, vel.y], 0, 0);
 
 		body.rotation = rotation - Math.PI / 2;
+
+		this.game.add.audio('bow_fire').play();
 	}
 
 	allowArrowCollection() {

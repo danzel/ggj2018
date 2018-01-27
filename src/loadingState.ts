@@ -61,6 +61,35 @@ export default class LoadingState extends Phaser.State {
 		this.load.audio('taunt_4', require('./assets/sounds/taunts/right_ill_do_ya_for_that.opus'));
 		this.load.audio('taunt_5', require('./assets/sounds/taunts/tis_but_a_scratch.opus'));
 		this.load.audio('taunt_6', require('./assets/sounds/taunts/well_call_it_a_draw.opus'));
+
+		this.load.audio('victory', require('./assets/sounds/victory_is_mine.opus'));
+
+		this.load.audio('steel_hit_1', require('./assets/sounds/steel_hit/Socapex - small knock.opus'));
+		this.load.audio('steel_hit_2', require('./assets/sounds/steel_hit/Socapex - Swordsmall.opus'));
+		this.load.audio('steel_hit_3', require('./assets/sounds/steel_hit/Socapex - Swordsmall_1.opus'));
+		this.load.audio('steel_hit_4', require('./assets/sounds/steel_hit/Socapex - Swordsmall_2.opus'));
+		this.load.audio('steel_hit_5', require('./assets/sounds/steel_hit/Socapex - Swordsmall_3.opus'));
+
+		this.load.audio('bow_fire', require('./assets/sounds/bow/bow_fire.opus'));
+		
+		this.load.audio('bow_hit_1', require('./assets/sounds/bow/arrowHit01.opus'));
+		this.load.audio('bow_hit_2', require('./assets/sounds/bow/arrowHit02.opus'));
+		this.load.audio('bow_hit_3', require('./assets/sounds/bow/arrowHit03.opus'));
+		this.load.audio('bow_hit_4', require('./assets/sounds/bow/arrowHit04.opus'));
+		this.load.audio('bow_hit_5', require('./assets/sounds/bow/arrowHit05.opus'));
+		this.load.audio('bow_hit_6', require('./assets/sounds/bow/arrowHit06.opus'));
+		this.load.audio('bow_hit_7', require('./assets/sounds/bow/arrowHit07.opus'));
+		this.load.audio('bow_hit_8', require('./assets/sounds/bow/arrowHit08.opus'));
+		
+		this.load.audio('player_hit_1', require('./assets/sounds/player_hit/Socapex - hurt.opus'));
+		this.load.audio('player_hit_2', require('./assets/sounds/player_hit/Socapex - Monster_Hurt.opus'));
+		this.load.audio('player_hit_3', require('./assets/sounds/player_hit/Socapex - new_hits.opus'));
+		this.load.audio('player_hit_4', require('./assets/sounds/player_hit/Socapex - new_hits_2.opus'));
+		this.load.audio('player_hit_5', require('./assets/sounds/player_hit/Socapex - new_hits_5.opus'));
+		this.load.audio('player_hit_6', require('./assets/sounds/player_hit/Socapex - new_hits_8.opus'));
+		this.load.audio('player_hit_7', require('./assets/sounds/player_hit/Socapex - new_hits_9.opus'));
+		
+		
 /*
 		this.load.image('blood_1', require('./assets/images/blood/blood1.png'));
 		this.load.image('blood_2', require('./assets/images/blood/blood2.png'));
