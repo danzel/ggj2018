@@ -2,14 +2,13 @@ blunt force transmission
 ========================
 
 Video
-- Splash (With us spinning the players)
++ Splash (With us spinning the players)
 - Clip of each weapon shooting the target dummy
   - Axe
   - Mace
   - Arrow
-- Gameplay
++ Gameplay
 
-Screenshot for Voting sheet
 
 GGJ Site
 - Featured Image (Screenshot for voting sheet)
@@ -18,6 +17,9 @@ GGJ Site
 - Upload connected
 - Play now! link
 
+Fix shooting arrow at edge of screen
+
+Try colored players
 
 Probably won't try
 ====================
@@ -69,6 +71,4 @@ Sounds
 make sure everyone gets 2 goes at each weapon
 Make arrow fire off any back button
 desaturate health bars
-
-
-
+Retake Screenshot for Voting sheet

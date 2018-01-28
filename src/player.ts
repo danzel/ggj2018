@@ -54,7 +54,7 @@ export class Player {
 	allThingsToDestroy = new Array<{ destroy: Function }>();
 	constraints = new Array<any>();
 
-	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, private middleGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType, hideBars?: boolean) {
+	constructor(private game: Phaser.Game, private backgroundGroup: Phaser.Group, private middleGroup: Phaser.Group, public pad: Phaser.SinglePad, public startX: number, public startY: number, public weaponType: WeaponType, private hideBars?: boolean) {
 		pad.deadZone = 0;
 
 		this.createBody(startX, startY);
@@ -81,6 +81,9 @@ export class Player {
 		}
 		if (hideBars) {
 			this.healthBar.visible = false;
+		}
+		if (weaponType === null) {
+			this.health = 99999;
 		}
 	}
 
@@ -122,6 +125,18 @@ export class Player {
 		this.body.angularDamping = 1;
 		this.body.damping = .999;
 		this.body.collideWorldBounds = true;
+
+		
+		if (this.hideBars) {
+			this.sprite.scale.set(1.4);
+			this.spriteBg.visible = false;
+			this.body.clearShapes();
+			this.body.addRectangle(50, 150);
+			this.body.damping = .9999;
+			this.body.mass *= 2;
+			this.body.kinematic = true;
+		}
+
 
 		this.bodyMass = this.body.mass;
 
@@ -406,7 +421,9 @@ export class Player {
 				}
 			}
 
-			this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
+			if (Math.abs(this.pad.axis(0)) > 0.1 || Math.abs(this.pad.axis(1)) > 0.1) {
+				this.body.applyImpulseLocal([-this.pad.axis(0) * scale, -this.pad.axis(1) * scale], 0, 0);
+			}
 		}
 	}
 
@@ -451,18 +468,22 @@ export class Player {
 			this.copyPasta(this.chainBgs[i], this.chains[i]);
 		}
 
-		if (Math.abs(this.body.velocity.x) > 0.05 && Math.abs(this.body.velocity.y) > 0.05) {
-			if (this.body.velocity.x > 0 && this.body.velocity.y > 0) {
-				this.setSprite('SE');
-			}
-			if (this.body.velocity.x <= 0 && this.body.velocity.y > 0) {
-				this.setSprite('SW');
-			}
-			if (this.body.velocity.x <= 0 && this.body.velocity.y <= 0) {
-				this.setSprite('NW');
-			}
-			if (this.body.velocity.x > 0 && this.body.velocity.y <= 0) {
-				this.setSprite('NE');
+		if (this.hideBars) {
+			this.sprite.loadTexture('target_dummy');
+		} else {
+			if (Math.abs(this.body.velocity.x) > 0.05 && Math.abs(this.body.velocity.y) > 0.05) {
+				if (this.body.velocity.x > 0 && this.body.velocity.y > 0) {
+					this.setSprite('SE');
+				}
+				if (this.body.velocity.x <= 0 && this.body.velocity.y > 0) {
+					this.setSprite('SW');
+				}
+				if (this.body.velocity.x <= 0 && this.body.velocity.y <= 0) {
+					this.setSprite('NW');
+				}
+				if (this.body.velocity.x > 0 && this.body.velocity.y <= 0) {
+					this.setSprite('NE');
+				}
 			}
 		}
 	}

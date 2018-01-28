@@ -85,24 +85,13 @@ export default class GameState extends Phaser.State {
 		this.bowHitIndex = 0;
 
 		this.playerWeapons = [
-			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
-			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
-			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
-			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Chain, WeaponType.Chain, WeaponType.Sword, WeaponType.Sword,],
+			[null,null,null,null,null,null],
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow,],
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow,],
+			[WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow, WeaponType.Arrow,],
+			//[WeaponType.Sword, WeaponType.Sword, WeaponType.Sword, WeaponType.Sword, WeaponType.Sword, WeaponType.Sword,],
+			//[WeaponType.Chain, WeaponType.Chain, WeaponType.Chain, WeaponType.Chain, WeaponType.Chain, WeaponType.Chain,],
 		];
-		this.playerWeapons.forEach(w => {
-			let anyMatch = false;
-			do {
-				Shuffle(w);
-
-				anyMatch = false;
-				for (let i = 1; i < w.length; i++) {
-					if (w[i] == w[i - 1]) {
-						anyMatch = true;
-					}
-				}
-			} while (anyMatch);
-		})
 	}
 	losingPlayer: number = null;
 
@@ -122,7 +111,7 @@ export default class GameState extends Phaser.State {
 		this.physics.startSystem(Phaser.Physics.P2JS);
 		this.physics.p2.setImpactEvents(true);
 
-		this.physics.p2.restitution = 0.4;
+		this.physics.p2.restitution = 0.8;
 		this.underBloodGroupForLotsOfBlood = this.game.add.group();
 
 		this.underBloodGroup = this.game.add.group(this.underBloodGroupForLotsOfBlood);
@@ -133,7 +122,7 @@ export default class GameState extends Phaser.State {
 
 
 		this.players = [
-			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 200, 200, this.playerWeapons[0][remainingLives[0] - 1]),
+			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad1, 400, G.RenderHeight / 2, null, true),
 			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad2, G.RenderWidth - 200, 200, this.playerWeapons[1][remainingLives[1] - 1]),
 			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad3, G.RenderWidth - 100, 720 - 40, this.playerWeapons[2][remainingLives[2] - 1]),
 			new Player(this.game, this.backgroundGroup, this.middleGroup, this.game.input.gamepad.pad4, 40, 720 - 40, this.playerWeapons[3][remainingLives[3] - 1]),
@@ -162,7 +151,7 @@ export default class GameState extends Phaser.State {
 			body.addCircle(30);
 			body.damping = 0.6;
 		}*/
-
+/*
 		this.nameText = [
 			this.add.text(80, 80 - 50, G.Names[0], {
 				fontSize: 60,
@@ -210,7 +199,7 @@ export default class GameState extends Phaser.State {
 			})
 		];
 		this.scoreText.forEach(s => s.anchor.set(0.5));
-
+*/
 		this.physics.p2.onBeginContact.removeAll();
 		this.physics.p2.onBeginContact.add((a, b, c, d, e) => {
 			if (this.losingPlayer === null) {
@@ -277,7 +266,7 @@ export default class GameState extends Phaser.State {
 						let damagingSelf = p == weaponBody.player;
 
 						//Don't let players kill themselves
-						if ((!damagingSelf || p.health > force) && p.health > 0) {
+						if ((!damagingSelf) && p.health > 0) {
 							p.takeDamage(force);
 							this.drawSplatter(force, a, b, e, p.health == 0);
 
@@ -414,6 +403,9 @@ export default class GameState extends Phaser.State {
 			let sprite = this.add.sprite(ec.x, ec.y, 'blood_p', undefined, this.overBloodGroup);
 			sprite.anchor.set(0.5);
 			let r = ((128 + Math.random() * 70) | 0) * 0x10000;
+			if ((b.player && b.player.hideBars) || (a.player && a.player.hideBars)) {
+				r = r | r >> 8 | r >> 16;
+			}
 			sprite.tint = r;
 
 			sprite.scale.set(0.3);
@@ -460,6 +452,9 @@ export default class GameState extends Phaser.State {
 		const bloodTime2 = 200;
 
 		let r = ((128 + Math.random() * 70) | 0) * 0x10000;
+		if ((b.player && b.player.hideBars) || (a.player && a.player.hideBars)) {
+			r = r | r >> 8 | r >> 16;
+		}
 		sprite.tint = r;
 		sprite.scale.set(0.3 / scaleScale);
 		this.game.add.tween(sprite.scale)

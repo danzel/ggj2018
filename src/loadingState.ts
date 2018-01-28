@@ -7,7 +7,7 @@ export default class LoadingState extends Phaser.State {
 	init() {
 		this.game.stage.backgroundColor = '#eeeeee';
 		this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-		this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+		//this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.stage.disableVisibilityChange = true;
 	}
 
@@ -24,6 +24,8 @@ export default class LoadingState extends Phaser.State {
 
 		this.load.image('mushroom2', require('./assets/images/mushroom2.png'));
 
+		this.load.image('target_dummy', require('./assets/images/character/target_dummy.svg'));
+		
 		this.load.image('arrow', require('./assets/images/arrow.svg'));
 		this.load.image('axe', require('./assets/images/axe.svg'));
 		this.load.image('bow', require('./assets/images/bow.svg'));
@@ -115,8 +117,8 @@ export default class LoadingState extends Phaser.State {
 		console.log('create', label)
 		this.loaded++;
 		if (this.loaded >= 2) {
-			this.state.start('splashscreen');
-			//this.state.start('game');
+			//this.state.start('splashscreen');
+			this.state.start('game');
 		}
 	}
 }
